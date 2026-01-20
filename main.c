@@ -19,12 +19,15 @@ typedef struct
 // Used functions !
 Matrix create_matrix(int rows,int cols);
 void set_value(Matrix m, int r, int c, float value);
-void free_matrix(Matrix m);
+void free_matrix(Matrix m); 
 Matrix multiply_matrices(Matrix a, Matrix b);
-void print_matrix(Matrix m);
+void print_matrix(Matrix m); // Will be used to easily print any matrix
+void relu_matrix(Matrix m); // Convert any negative number to 0
+void sofmax_matrix(Matrix m);
 
 int main()
 {
+    /*
     Matrix A = create_matrix(2,2);
     Matrix I = create_matrix(2,2);
 
@@ -43,8 +46,19 @@ int main()
     free_matrix(A);
     free_matrix(I);
     free_matrix(C);
+    */
+
     
-    return 0;
+    Matrix C = create_matrix(2,2);
+    set_value(C, 0, 0, -10.5f); 
+
+    printf("Matrix C before ReLU:\n");
+    print_matrix(C);
+
+    sofmax_matrix(C);
+    printf("\n");
+    print_matrix(C);
+    
 }
 
 Matrix create_matrix(int rows,int cols) {
@@ -103,5 +117,34 @@ void print_matrix(Matrix m){
             printf("%.2f ",m.data[index]);
         }
         printf("\n");
+    }
+}
+
+void relu_matrix(Matrix m) {
+    int total = m.rows * m.cols;
+
+    for (int i = 0; i < total; i++) {
+        if (m.data[i] < 0.0f) {
+            m.data[i] = 0.0f;
+        }
+    }
+}
+
+void sofmax_matrix(Matrix m) { 
+    float total_sum = 0.0f; 
+
+    for (int i = 0; i < m.rows; i++){
+        for (int j = 0; j < m.cols; j++){
+            int index = ((i * m.cols) + j); 
+            float e = expf(m.data[index]);
+            total_sum += e;
+            m.data[index] = e;
+        }
+    }
+    for (int i = 0; i < m.rows; i++){
+        for (int j = 0; j < m.cols; j++){
+            int index = ((i * m.cols) + j);
+            m.data[index] = m.data[index] / total_sum;
+        }
     }
 }
