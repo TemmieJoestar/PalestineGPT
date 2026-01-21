@@ -16,17 +16,20 @@ typedef struct
     float* data;
 } Matrix;
 
-// Used functions !
+// Return Matrix 
 Matrix create_matrix(int rows,int cols);
 Matrix multiply_matrices(Matrix a, Matrix b);
 Matrix matrix_addition(Matrix a, Matrix b);
+Matrix transpose(Matrix m);
 
+// Return Void
 void set_value(Matrix m, int r, int c, float value);
 void free_matrix(Matrix m); 
-void print_matrix(Matrix m); // Will be used to easily print any matrix
-void relu_matrix(Matrix m); // Convert any negative number to 0
+void print_matrix(Matrix m);
+void relu_matrix(Matrix m);
 void sofmax_matrix(Matrix m);
 
+// Will be used to test function
 int main()
 {
     
