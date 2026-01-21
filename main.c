@@ -18,37 +18,46 @@ typedef struct
 
 // Used functions !
 Matrix create_matrix(int rows,int cols);
+Matrix multiply_matrices(Matrix a, Matrix b);
+Matrix matrix_addition(Matrix a, Matrix b);
+
 void set_value(Matrix m, int r, int c, float value);
 void free_matrix(Matrix m); 
-Matrix multiply_matrices(Matrix a, Matrix b);
 void print_matrix(Matrix m); // Will be used to easily print any matrix
 void relu_matrix(Matrix m); // Convert any negative number to 0
 void sofmax_matrix(Matrix m);
 
 int main()
 {
-    /*
+    
     Matrix A = create_matrix(2,2);
-    Matrix I = create_matrix(2,2);
+    Matrix B = create_matrix(2,2);
 
     set_value(A, 0, 0 , 1.0f); set_value(A, 0, 1, 2.0f);
     set_value(A, 1, 0, 3.0f); set_value(A,1, 1, 4.0f);
 
 
-    set_value(I, 0, 0 , 1.0f); set_value(I, 0, 1, 0.0f);
-    set_value(I, 1, 0, 0.0f); set_value(I,1, 1, 1.0f);
+    set_value(B, 0, 0 , 5.0f); set_value(B, 0, 1, 6.0f);
+    set_value(B, 1, 0, 7.0f); set_value(B,1, 1, 8.0f);
 
-    Matrix C = multiply_matrices(A,I);
+    printf(BOLD("Matrix A -> \n"));
 
-    printf("Result Matrix C -> \n");
+    print_matrix(A);
+
+    printf(BOLD("Matrix B -> \n"));
+    print_matrix(B);
+    
+    Matrix C = matrix_addition(A,B);
+
+    printf(BOLD("Result Matrix C -> \n"));
     print_matrix(C);
 
     free_matrix(A);
-    free_matrix(I);
+    free_matrix(B);
     free_matrix(C);
-    */
-
     
+
+    /*
     Matrix C = create_matrix(2,2);
     set_value(C, 0, 0, -10.5f); 
 
@@ -58,7 +67,7 @@ int main()
     sofmax_matrix(C);
     printf("\n");
     print_matrix(C);
-    
+    */
 }
 
 Matrix create_matrix(int rows,int cols) {
@@ -82,20 +91,16 @@ void free_matrix(Matrix m) {
 }
 
 Matrix multiply_matrices(Matrix a, Matrix b) {
-    // Check if the "Golden Rule" is not violated, if so print an error message and exit the program.
-    if (a.cols != b.rows){
-        printf(RED_TEXT("Golden Rule broken !"));
-        exit(1); // Stop the program
+    if (a.cols != b.rows) {
+        printf(RED_TEXT("Error: Inner dimensions must match (A.cols == B.rows)!\n"));
+        exit(1);
     }
     
     // Creating the result matrix
-    Matrix c = create_matrix(a.rows , b.cols);
-
-    // The Triple Loop 
+    Matrix c = create_matrix(a.rows , b.cols); 
     // Loop 'i' through every ROW of A
     for (int i = 0; i < c.rows; i++){
         // Loop 'j' through every COLUMN of B
-        
         for (int j = 0; j < c.cols; j++){
             float sum = 0.0f;
             for (int k = 0; k < a.cols; k++){
@@ -147,4 +152,22 @@ void sofmax_matrix(Matrix m) {
             m.data[index] = m.data[index] / total_sum;
         }
     }
+}
+
+Matrix matrix_addition(Matrix a, Matrix b){
+    if (a.rows != b.rows || a.cols != b.cols) {
+        printf(RED_TEXT("Error: Matrices must be the same size for addition!\n"));
+        exit(1);
+    }
+    Matrix c =create_matrix(a.rows,a.cols);
+
+    for (int i = 0; i < a.rows; i++) {
+        for (int j = 0; j < a.cols; j++) {
+            int index = (i * a.cols) + j;
+            
+            float result = a.data[index] + b.data[index];
+            set_value(c, i, j, result);
+        }
+    }
+    return c;
 }
