@@ -42,7 +42,6 @@ int main()
 
     printf(BOLD("Matrix A -> \n"));
 
-    print_matrix(A);
 
     printf(BOLD("Matrix B -> \n"));
     print_matrix(B);
@@ -135,17 +134,29 @@ void relu_matrix(Matrix m) {
     }
 }
 
-void sofmax_matrix(Matrix m) { 
-    float total_sum = 0.0f; 
+
+void sofmax_matrix(Matrix m){
+    float total_sum = 0.0f;
+    // Find the maximum value
+    float max = m.data[0];
+    for (int i = 0; i < m.rows; i++) {
+        for (int j = 0; j < m.cols; j++) {
+            float current = m.data[i * m.cols + j];
+            if (current > max) {
+                max = current; // Update max if current is greater
+            }
+        }
+    }
 
     for (int i = 0; i < m.rows; i++){
         for (int j = 0; j < m.cols; j++){
             int index = ((i * m.cols) + j); 
-            float e = expf(m.data[index]);
+            float e = expf(m.data[index] - max);
             total_sum += e;
             m.data[index] = e;
         }
     }
+
     for (int i = 0; i < m.rows; i++){
         for (int j = 0; j < m.cols; j++){
             int index = ((i * m.cols) + j);
