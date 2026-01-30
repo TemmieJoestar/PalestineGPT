@@ -21,14 +21,15 @@ Matrix create_matrix(int rows,int cols);
 Matrix multiply_matrices(Matrix a, Matrix b);
 Matrix matrix_addition(Matrix a, Matrix b);
 Matrix transpose(Matrix m);
+Matrix relu_matrix(Matrix m);
+Matrix sofmax_matrix(Matrix m);
 
 // Return Void -- Will be change
 
 void set_value(Matrix m, int r, int c, float value);
 void free_matrix(Matrix m); 
 void print_matrix(Matrix m);
-Matrix relu_matrix(Matrix m);
-void sofmax_matrix(Matrix m);
+
 
 // Others
 float get_value(Matrix m, int r, int c);
@@ -37,22 +38,27 @@ float get_value(Matrix m, int r, int c);
 int main() {
     Matrix A = create_matrix(2, 2);
     
-    // Set some values (including negatives)
-    set_value(A, 0, 0, 5.0f);
-    set_value(A, 0, 1, -3.0f);
-    set_value(A, 1, 0, -7.0f);
-    set_value(A, 1, 1, 2.0f);
+    set_value(A, 0, 0, 1.0f);
+    set_value(A, 0, 1, 2.0f);
+    set_value(A, 1, 0, 3.0f);
+    set_value(A, 1, 1, 4.0f);
     
-    printf("Original Matrix A:\n");
+    printf("Matrix A:\n");
     print_matrix(A);
     
-    Matrix B = relu_matrix(A);
+    Matrix B = sofmax_matrix(A);
     
-    printf("\nAfter ReLU (Matrix B):\n");
+    printf("\nAfter Softmax (Matrix B):\n");
     print_matrix(B);
     
-    printf("\nOriginal Matrix A (should be unchanged):\n");
+    printf("\nMatrix A (should be unchanged):\n");
     print_matrix(A);
+    
+    float sum = 0.0f;
+    for (int i = 0; i < B.rows * B.cols; i++) {
+        sum += B.data[i];
+    }
+    printf("\nSum of softmax values: %.6f \n", sum);
     
     free_matrix(A);
     free_matrix(B);
@@ -151,34 +157,33 @@ Matrix relu_matrix(Matrix m) {
 }
 
 
-void sofmax_matrix(Matrix m){
-    float total_sum = 0.0f;
-    // Find the maximum value
+Matrix sofmax_matrix(Matrix m) {
+    // Find max value from original "Matrix m"
     float max = m.data[0];
-    for (int i = 0; i < m.rows; i++) {
-        for (int j = 0; j < m.cols; j++) {
-            float current = m.data[i * m.cols + j];
-            if (current > max) {
-                max = current; // Update max if current is greater
-            }
+    int total = m.rows * m.cols;
+    
+    for (int i = 1; i < total; i++) {  // Start from 1 since we initialized with data[0]
+        if (m.data[i] > max) {
+            max = m.data[i];
         }
     }
-
-    for (int i = 0; i < m.rows; i++){
-        for (int j = 0; j < m.cols; j++){
-            int index = ((i * m.cols) + j); 
-            float e = expf(m.data[index] - max);
-            total_sum += e;
-            m.data[index] = e;
-        }
+    
+    // Create new "Matrix c" and apply exp(x - max)
+    Matrix c = create_matrix(m.rows, m.cols);
+    float total_sum = 0.0f;
+    
+    for (int i = 0; i < total; i++) {
+        float e = expf(m.data[i] - max);
+        c.data[i] = e;
+        total_sum += e;
     }
-
-    for (int i = 0; i < m.rows; i++){
-        for (int j = 0; j < m.cols; j++){
-            int index = ((i * m.cols) + j);
-            m.data[index] = m.data[index] / total_sum;
-        }
+    
+    // Normalize by dividing by sum
+    for (int i = 0; i < total; i++) {
+        c.data[i] = c.data[i] / total_sum;
     }
+    
+    return c;
 }
 
 Matrix matrix_addition(Matrix a, Matrix b){
