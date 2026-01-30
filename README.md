@@ -6,7 +6,7 @@ Direct concurence against IsraelGPT (by @gastoncks on github).
 
 # TODO (WIP)
 
-Currently working -> Currently changing every Matrix that return void to return a new Matrix instead.
+Currently working -> Matrix function (Tranpose, substraction, Scalar multiplication)
 
 # Redoing/Finishing MATRIX
 
