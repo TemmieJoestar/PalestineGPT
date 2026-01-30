@@ -6,14 +6,12 @@ Direct concurence against IsraelGPT (by @gastoncks on github).
 
 # TODO (WIP)
 
-Currently working  -> Implementation of the Transpose Logic...
+Currently working -> Currently changing every Matrix that return void to return a new Matrix instead.
 
-# Finishing the matrix function (Now)
+# Redoing/Finishing MATRIX
 
-    -> Implementing the Transpose Logic --> WIP
-            -> Will take one Matrix a and return Matrix C with cols and rows inversed 
-            -> Exemple : cols = 2 rows = 3 meaning a Matrix 2 x 3 
-                        After cols = 3 rows = 2 meaning a Matrix 3 x 2 
+    -> Redoing some Matrix function (Almsot everything to make them return a new Matrix)
+        -> Will then work on transpose function
 
     -> Implementing GELU (Gaussian Error Line ar Unit)
 
