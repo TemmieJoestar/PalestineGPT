@@ -17,14 +17,15 @@ typedef struct
 } Matrix;
 
 // Return Matrix 
-Matrix create_matrix(int rows,int cols);
-Matrix multiply_matrices(Matrix a, Matrix b);
-Matrix matrix_addition(Matrix a, Matrix b);
-Matrix transpose(Matrix m);
+Matrix create_matrix(int rows,int cols); // Create a matrix by Rows * Cols
+Matrix multiply_matrix(Matrix a, Matrix b); // Matrix A * Matrix B = Matrix C (Multiplication)
+Matrix matrix_addition(Matrix a, Matrix b); // Matrix A + Matrix B = Matrix C (Addition)
+Matrix matrix_subtraction(Matrix a, Matrix b); // Matrix A - Matrix B = Matrix C (Substraction)
+Matrix transpose(Matrix m); 
 Matrix relu_matrix(Matrix m);
 Matrix sofmax_matrix(Matrix m);
 
-// Return Void -- Will be change
+// Return Void
 
 void set_value(Matrix m, int r, int c, float value);
 void free_matrix(Matrix m); 
@@ -36,32 +37,45 @@ float get_value(Matrix m, int r, int c);
 
 // Will be used to test function
 int main() {
-    Matrix A = create_matrix(2, 2);
+    // Test transpose
+    printf("=== Testing Transpose ===\n");
+    Matrix A = create_matrix(2, 3);
+    set_value(A, 0, 0, 1.0f); set_value(A, 0, 1, 2.0f); set_value(A, 0, 2, 3.0f);
+    set_value(A, 1, 0, 4.0f); set_value(A, 1, 1, 5.0f); set_value(A, 1, 2, 6.0f);
     
-    set_value(A, 0, 0, 1.0f);
-    set_value(A, 0, 1, 2.0f);
-    set_value(A, 1, 0, 3.0f);
-    set_value(A, 1, 1, 4.0f);
-    
-    printf("Matrix A:\n");
+    printf("Original A (2×3):\n");
     print_matrix(A);
     
-    Matrix B = sofmax_matrix(A);
+    Matrix A_T = transpose(A);
+    printf("\nTransposed A (3×2):\n");
+    print_matrix(A_T);
     
-    printf("\nAfter Softmax (Matrix B):\n");
+    // Test subtraction
+    printf("\n=== Testing Subtraction ===\n");
+    Matrix B = create_matrix(2, 2);
+    Matrix C = create_matrix(2, 2);
+    
+    set_value(B, 0, 0, 10.0f); set_value(B, 0, 1, 8.0f);
+    set_value(B, 1, 0, 6.0f);  set_value(B, 1, 1, 4.0f);
+    
+    set_value(C, 0, 0, 1.0f); set_value(C, 0, 1, 2.0f);
+    set_value(C, 1, 0, 3.0f); set_value(C, 1, 1, 4.0f);
+    
+    printf("Matrix B:\n");
     print_matrix(B);
+    printf("\nMatrix C:\n");
+    print_matrix(C);
     
-    printf("\nOriginal Matrix A (should be unchanged):\n");
-    print_matrix(A);
-    
-    float sum = 0.0f;
-    for (int i = 0; i < B.rows * B.cols; i++) {
-        sum += B.data[i];
-    }
-    printf("\nSum of softmax values: %.6f \n", sum);
+    Matrix D = matrix_subtraction(B, C);
+    printf("\nB - C:\n");
+    print_matrix(D);
     
     free_matrix(A);
+    free_matrix(A_T);
     free_matrix(B);
+    free_matrix(C);
+    free_matrix(D);
+    
     return 0;
 }
 
@@ -107,9 +121,9 @@ void free_matrix(Matrix m) {
     free(m.data);
 }
 
-Matrix multiply_matrices(Matrix a, Matrix b) {
+Matrix multiply_matrix(Matrix a, Matrix b) {
     if (a.cols != b.rows) {
-        printf(RED_TEXT("Error: Inner dimensions must match (a.cols == b.rows)!\n"));
+        fprintf(stderr,RED_TEXT("Error: Inner dimensions must match (a.cols == b.rows)!\n"));
         exit(1);
     }
     
@@ -158,8 +172,8 @@ Matrix relu_matrix(Matrix m) {
 
 
 Matrix sofmax_matrix(Matrix m) {
-    // Find max value from original "Matrix m"
-    float max = m.data[0];
+    
+    float max = m.data[0]; // Find max value from original "Matrix m"
     int total = m.rows * m.cols;
     
     for (int i = 1; i < total; i++) {  // Start from 1 since we initialized with data[0]
@@ -168,8 +182,7 @@ Matrix sofmax_matrix(Matrix m) {
         }
     }
     
-    // Create new "Matrix c" and apply exp(x - max)
-    Matrix c = create_matrix(m.rows, m.cols);
+    Matrix c = create_matrix(m.rows, m.cols); // Create new "Matrix c" and apply exp(x - max)
     float total_sum = 0.0f;
     
     for (int i = 0; i < total; i++) {
@@ -204,16 +217,43 @@ Matrix matrix_addition(Matrix a, Matrix b){
     return c;
 }
 
-// WIP
-Matrix transpose(Matrix m){
-    for (int i = 0; i > m.cols; i++){
-        for (int j =0; j > m.rows; j++){
-            int index = (i * m.cols) + j;
-            float tmp = m.data[index];
+Matrix matrix_subtraction(Matrix a, Matrix b){
 
-
-
-        } 
+    if (a.rows != b.rows || a.cols != b.cols){
+        printf(RED_TEXT("Error: Matrices must be the same size for substraction!\n"));
+        exit(1);
     }
 
+    Matrix c = create_matrix(a.rows,a.cols);
+
+    for (int i = 0; i < a.rows; i++) {
+        for (int j = 0; j < a.cols; j++) {
+            int index = (i * a.cols) + j;
+            
+            float result = a.data[index] - b.data[index];
+            set_value(c, i, j, result);
+        }
+    }
+    return c;
+}
+
+Matrix transpose(Matrix m){
+    
+    Matrix result = create_matrix(m.cols,m.rows);
+
+    for (int i = 0; i < m.rows; i++){
+        for (int j = 0; j < m.cols; j++){
+            int index = (i * m.cols) + j;
+            float value = m.data[index];
+
+            set_value(result,j,i,value);
+        }
+    }
+    return result;
+}
+
+Matrix scalar_multiplication(Matrix m, float scalar){
+
+
+    
 }
