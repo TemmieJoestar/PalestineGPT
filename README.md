@@ -6,7 +6,7 @@ Direct concurence against IsraelGPT (by @gastoncks on github).
 
 # TODO (WIP)
 
-Currently working -> Matrix function (Tranpose, substraction, Scalar multiplication)
+Currently working -> Matrix function (Tranpose (Done), Subtraction(done), Scalar Multiplication(WIP),Hadamard Product (WIP))
 
 # Redoing/Finishing MATRIX
 
