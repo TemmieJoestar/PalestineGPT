@@ -51,7 +51,7 @@ int main() {
     printf("\nAfter Softmax (Matrix B):\n");
     print_matrix(B);
     
-    printf("\nMatrix A (should be unchanged):\n");
+    printf("\nOriginal Matrix A (should be unchanged):\n");
     print_matrix(A);
     
     float sum = 0.0f;
@@ -204,6 +204,7 @@ Matrix matrix_addition(Matrix a, Matrix b){
     return c;
 }
 
+// WIP
 Matrix transpose(Matrix m){
     for (int i = 0; i > m.cols; i++){
         for (int j =0; j > m.rows; j++){
