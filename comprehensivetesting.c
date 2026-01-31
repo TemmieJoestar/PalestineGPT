@@ -20,6 +20,8 @@ void test_matrix_subtraction();
 void test_matrix_transpose();
 void test_matrix_hadamard();
 void test_matrix_relu();
+void test_matrix_softmax();
+void test_matrix_scalar_multiply(); 
 
 int main() {
     printf(BOLD("=== Matrix Library Tests ===\n\n"));
@@ -30,6 +32,8 @@ int main() {
     test_matrix_transpose();
     test_matrix_hadamard();
     test_matrix_relu();
+    test_matrix_softmax();
+    test_matrix_scalar_multiply();
     
     printf(GREEN_TEXT("\n=== All Tests Passed! ===\n"));
     return 0;
@@ -273,5 +277,78 @@ void test_matrix_relu(){
     free_matrix(A);
     free_matrix(C);
 
+    printf(GREEN_TEXT("PASSED\n"));
+}
+
+// Test 7: Softmax
+void test_matrix_softmax() {
+    printf(BOLD("Testing matrix_softmax... "));
+
+    // Create Tested Matrix
+    Matrix A = create_matrix(2, 2);
+
+     // Fill A: [1 2]
+     //           [3 4]
+    set_value(A, 0, 0, 1.0f); set_value(A, 0, 1, 2.0f);
+    set_value(A, 1, 0, 3.0f); set_value(A, 1, 1, 4.0f);
+
+    // Create Testing Matrix
+    Matrix C = matrix_softmax(A);
+
+    // Test 7-1: Sum should equal 1.0
+    float sum = 0.0f;
+    int total = C.rows * C.cols;
+    for (int i = 0; i < total; i++) {
+        sum += C.data[i];
+    }
+
+    if (!float_equals(sum, 1.0f)) {
+        printf("FAILED: Sum = %.6f (expected 1.0)\n", sum);
+        exit(1);
+    }
+
+    // Test 7-2: All values should be between 0 and 1
+    for (int i = 0; i < total; i++) {
+        if (C.data[i] < 0.0f || C.data[i] > 1.0f) {
+            printf("FAILED: Value out of range [0,1]\n");
+            exit(1);
+        }
+    }
+
+    // Clean Up
+    free_matrix(A);
+    free_matrix(C);
+    printf(GREEN_TEXT("PASSED\n"));
+}
+
+// Test 8: Scalar Multiplication
+void test_matrix_scalar_multiply() {
+    printf(BOLD("Testing matrix_scalar_multiply... "));
+
+    // Create test matrix
+    Matrix A = create_matrix(2, 2);
+    
+    // Fill A: [1 2]
+    //         [3 4]
+    set_value(A, 0, 0, 1.0f); set_value(A, 0, 1, 2.0f);
+    set_value(A, 1, 0, 3.0f); set_value(A, 1, 1, 4.0f);
+
+    // Multiply by scalar 2.5
+    Matrix C = matrix_scalar_multiply(A, 2.5f);
+
+    // Check values
+    // Expected: [2.5  5.0]
+    //           [7.5 10.0]
+    if (!float_equals(get_value(C, 0, 0), 2.5f) ||
+        !float_equals(get_value(C, 0, 1), 5.0f) ||
+        !float_equals(get_value(C, 1, 0), 7.5f) ||
+        !float_equals(get_value(C, 1, 1), 10.0f)) {
+        printf(RED_TEXT("FAILED: Incorrect values\n"));
+        exit(1);
+    }
+
+    // Clean up
+    free_matrix(A);
+    free_matrix(C);
     printf(GREEN_TEXT("PASSED\n"));
 }
