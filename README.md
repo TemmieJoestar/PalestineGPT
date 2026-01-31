@@ -4,19 +4,14 @@ PalestineGPT is a AI model based on the LLM model and the Transformer architectu
 
 Direct concurence against IsraelGPT (by @gastoncks on github).
 
-# TODO (WIP)
+Gloire a La Cave !
 
-Currently working -> Matrix function : Tranpose (Done), Subtraction(done), Scalar Multiplication(WIP),Hadamard Product (WIP)
+# Testing & Organization (Currently Doing)
 
-# Redoing/Finishing MATRIX
+Currently working -> Comprehensive test...
 
-    -> Redoing some Matrix function (Almsot everything to make them return a new Matrix)
-        -> Will then work on transpose function
+Will work on : 
 
-    -> Implementing GELU (Gaussian Error Line ar Unit)
-
-# Initialization & Randomness (After)
-
-    -> Implementing Xaviar/Glorot or He Initialization (Methods to initalize weights)
-
-# Optimisation (After)
+    > Fix Memory Leak (If any) 
+    > Organize code files (Split files)
+    > Create Doc
