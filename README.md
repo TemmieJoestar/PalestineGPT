@@ -14,15 +14,14 @@ Glory to the CDT !
 
 # TODO || Testing & Organization
 
-Currently working -> Comprehensive test...
+Currently working -> Fix Memory Leak (Valgrind)
 
 Will work on : 
 
-    > Fix Memory Leak (If any) 
     > Organize code files (Split files)
     > Create Doc
 
 # Finished !
-
+    
     > Matrix Library (With it's own header files.)
     > Comprehensive Testing
