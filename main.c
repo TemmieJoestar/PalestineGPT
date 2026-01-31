@@ -37,7 +37,8 @@ float get_value(Matrix m, int r, int c);
 
 // Will be used to test function
 int main() {
-    
+    Matrix A = create_matrix(1, 2);
+    printf("DEBUG: A.rows = %d, A.cols = %d\n", A.rows, A.cols);
     return 0;
 }
 
