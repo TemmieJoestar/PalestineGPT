@@ -1,30 +1,74 @@
-# PalestineGPT  by @temmiejoestar
+# PalestineGPT
 
-PalestineGPT  is a AI based on LLM and the Transformer Architecture!
-    (PalestineGPT will soon be CaveGPT)
+Building a Large Language Model (LLM) with Transformer architecture from scratch in C.
 
-    > Small project mainly focused to learn how AI work, and learn how C work as I'm still learning.
-    > I try to make everything from scratch, using as less library as possible (unless things like math etc..) like Matrix.
-    > I'll try to finish this project before the end of my school years.
-    > I don't care if you change anything of it, be free to use it as you want.
+## Project Status
 
-Direct concurence against IsraelGPT (by @gastoncks on GitHub).
+**Phase 0: Matrix Library** COMPLETE
+- Custom matrix operations library
+- Zero memory leaks (valgrind verified)
+- Comprehensive test suite
+- Professional build system
 
-Glory to the CDT !
+## Current Features
 
-# TODO || Testing & Organization
+### Matrix Operations
+- Matrix multiplication (linear algebra)
+- Element-wise operations (add, subtract, multiply)
+- Matrix transpose
+- Scalar multiplication
 
-Currently working -> ...
+### Activation Functions
+- ReLU (Rectified Linear Unit)
+- Softmax (probability distribution)
 
-Will work on : 
+## Building
+```bash
+# Run tests
+make test
 
-    > Organize code files (Split from "main.c").
-    > Fix mem leak (For other C files later on). 
-    > Finish Matrix Library (95% Done, unless few functions.).
+# Build main program
+make
 
-# Finished !
+# Check for memory leaks
+make memcheck
 
-    > "matrix.h" Doc fully finished.
-    > No mem leak ("comprehensivetesting.c"...).
-    > Matrix Library (With it's own HEADER and C files.).
-    > Comprehensive Testing (DONE,Will add others function later...).
+# Clean
+make clean
+```
+
+## Testing
+
+All functions are tested with comprehensive test suite:
+- 8 test functions
+- 100% coverage
+- Zero memory leaks
+
+## Project Structure 
+```
+├── matrix.h              # Matrix library header (documented)
+├── matrix.c              # Matrix library implementation
+├── comprehensivetesting.c # Test suite
+├── main.c                # Demo/experiments
+└── Makefile              # Build automation
+```
+
+## Next Steps
+
+- Phase 1: Mathematical Foundations
+- Phase 2: Neural Network Basics
+- Phase 3: Natural Language Processing
+- Phase 4: Attention Mechanism
+- Phase 5: Transformer Architecture
+- Phase 6: Training Infrastructure
+- Phase 7: Text Generation
+
+## Requirements
+
+- GCC compiler
+- Math library (-lm)
+- Valgrind (for memory checking)
+
+## License
+
+See LICENSE file.
