@@ -2,70 +2,55 @@
 #include <math.h>
 #include "matrix.h"
 
-typedef struct {
-    float weight;
-    float prediction;
-    float error;
-    float gradient;
-} TrainingStep;
-
-TrainingStep forward_pass(float weight, float input, float target) {
-    TrainingStep step;
-    step.weight = weight;
-    step.prediction = weight * input;
-    step.error = (step.prediction - target) * (step.prediction - target);
-    return step;
+Matrix forward_pass(Matrix Weights, Matrix Input) {
+    Matrix Prediction = matrix_multiply(Input, Weights);
+    return Prediction;
 }
 
-float backward_pass(TrainingStep step, float input, float target) {
-     return 2.0f * (step.prediction - target) * input;
-}
 
-float update_weight(float weight, float gradient, float learning_rate) {
-    float weight_new = weight - learning_rate * gradient; 
-    return weight_new;
-}
-
-void train(float initial_weight, float input, float target, int steps, float learning_rate) {
+Matrix backward_pass(Matrix Prediction, Matrix Input, Matrix Target) {
+    float diff = get_value(Prediction, 0, 0) - get_value(Target, 0, 0);
     
-    float weight = initial_weight;
-
-    printf(BOLD("\nTraining Started \n"));
-    printf("Initial weight: %.2f\n", weight);
-    printf("Target: %.2f, Input: %.2f\n", target, input);
-    printf("Learning rate: %.2f\n\n", learning_rate);
-
-    for (int i = 0; i < steps; i++){
-        TrainingStep step = forward_pass(weight,input,target);
-
-        float gradient = backward_pass(step,input,target);
-
-        float new_weight = update_weight(weight,gradient,learning_rate);
-        
-        // Check if it's converged, if so program exit the loop, print which step converged.
-        if (step.error < 0.0001f) {
-            printf(GREEN_TEXT("\nConverged at step %d!\n"), i + 1);
-            break;
-        }
-
-        // Print the value of "Weight" "Prediction" "Error" and "New Weight" after each step.
-        printf(BOLD("\nStep %d: \n"),i+1);
-        printf(BOLD("Weight -> %.2f\n"),weight);
-        printf(BOLD("Prediction -> %.2f\n"),step.prediction);
-        printf(BOLD("Error -> %.2f\n"),step.error);
-        printf(BOLD("New Weight -> %.2f\n"),new_weight);
-
-        weight = new_weight; // Initialize the new value of weight
-    }
-    printf(GREEN_TEXT("\nTraining Complete \n"));
-    printf("Final weight: %.2f\n", weight);
-    printf("Final prediction: %.2f (target: %.2f)\n", weight * input, target);
-    printf("Converged: %s\n", (fabs(weight * input - target) < 0.01) ? "YES" : "NO");
-
+    Matrix Input_T = matrix_transpose(Input);
+    Matrix Gradient = matrix_scalar_multiply(Input_T, 2.0f * diff);
+    
+    free_matrix(Input_T);
+    return Gradient; 
 }
 
-// Testing
-int main() {
-    train(3.75, 5.0, 20.0, 10, 0.01); 
-    return 0;
+float calculate_error(Matrix Prediction, Matrix Target) {
+    float pred = get_value(Prediction, 0, 0);
+    float targ = get_value(Target, 0, 0);
+    
+    float diff = pred - targ;
+    return diff * diff;
+}
+
+Matrix update_weights(Matrix Weights, Matrix Gradient, float learning_rate) {
+    Matrix Scaled_Grad = matrix_scalar_multiply(Gradient, learning_rate);
+    Matrix New_Weights = matrix_subtraction(Weights, Scaled_Grad);
+    
+    free_matrix(Scaled_Grad);
+    return New_Weights;
+}
+
+void train(Matrix Input, Matrix Weights, Matrix Target, int steps, float learning_rate) {
+    
+    
+    Matrix current = matrix_copy(Weights);
+    
+    for (int i = 0; i < steps; i++) {
+        Matrix Prediction = forward_pass(current, Input);
+        float error = calculate_error(Prediction, Target);
+        Matrix Gradient = backward_pass(Prediction, Input, Target);
+        Matrix New_weights = update_weights(current, Gradient, learning_rate);
+        
+        printf("\nStep %d: Error = %.4f", i+1, error);
+        
+        free_matrix(Prediction);
+        free_matrix(Gradient);
+        free_matrix(current);
+        current = New_weights;
+    }
+    free_matrix(current);
 }
