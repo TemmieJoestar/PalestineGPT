@@ -60,7 +60,7 @@ make FILE.memcheck
 ## Testing
 
 All functions are tested with comprehensive test suite:
-- 8 test functions.
+- 9 test functions.
 - 100% coverage.
 - Zero memory leaks.
 
