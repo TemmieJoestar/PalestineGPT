@@ -4,64 +4,78 @@ Building a Large Language Model (LLM) with Transformer architecture from scratch
 
 ## Project Status
 
-**Phase 0: Matrix Library** COMPLETE
+**Matrix Library** DONE
 - Custom matrix operations library
 - Zero memory leaks (valgrind verified)
-- Comprehensive test suite
+- Comprehensive test suite (9 tests)
 - Professional build system
+
+**Mathematical Foundations** IN PROGRESS
+- Linear Algebra -> DONE.
+- Calculus & Gradients -> DONE.
+- Loss Functions & Multi-Layer Networks. -> IN PROGRESS...
 
 ## Current Features
 
 ### Matrix Operations
-- Matrix multiplication (linear algebra)
-- Element-wise operations (add, subtract, multiply)
-- Matrix transpose
-- Scalar multiplication
+- Matrix multiplication (linear algebra).
+- Element-wise operations (add, subtract, multiply).
+- Matrix transpose.
+- Scalar multiplication.
+- Deep copy.
 
 ### Activation Functions
-- ReLU (Rectified Linear Unit)
-- Softmax (probability distribution)
+- ReLU (Rectified Linear Unit).
+- Softmax (probability distribution).
+
+### Neural Network Foundations
+- Forward pass (prediction).
+- Backward pass (gradient calculation).
+- Gradient descent (weight updates).
+- Training loop.
 
 ## Building
 ```bash
-# Run tests
-make test
+# Shows available Target, and how to use them.
+make help
 
-# Build main program
+# Build main program.
 make
 
-# Check for memory leaks
+# Compile and run 'comprehensivetesting.c'.
+make test
+
+# Compile and run 'FILE.c' (e.g, gradient_descent.run).
+make FILE.run
+
+# Run valgrind on 'comprehensivetest.c'.
 make memcheck
 
-# Clean
-make clean
+# Run valgrind on 'FILE.c' (e.g, gradient_descent.memcheck).
+make FILE.memcheck
+
+# Remove compliled executable files. (Only -> 'main', 'comprehensivetesting', 'gradient_descent' and 'test).
 ```
 
 ## Testing
 
 All functions are tested with comprehensive test suite:
-- 8 test functions
-- 100% coverage
-- Zero memory leaks
+- 8 test functions.
+- 100% coverage.
+- Zero memory leaks.
 
 ## Project Structure 
 ```
-├── matrix.h              # Matrix library header (documented)
-├── matrix.c              # Matrix library implementation
-├── comprehensivetesting.c # Test suite
-├── main.c                # Demo/experiments
-└── Makefile              # Build automation
+├── .gitignore              # Contains files that'll be ignored in commit.
+├── comprehensivetesting.c  # Comprehensive Test suite.
+├── gradient_descent        # Gradient Calculus with Matrix.
+├── LICENSE                 # MIT license file.
+├── main.c                  # Demo/Experiments.
+├── Makefile                # Build automation (make).
+├── matrix.c                # Matrix library implementation.
+├── matrix.h                # Matrix library header (documented).
+└── README.md               # README file.
 ```
-
-## Next Steps
-
-- Phase 1: Mathematical Foundations
-- Phase 2: Neural Network Basics
-- Phase 3: Natural Language Processing
-- Phase 4: Attention Mechanism
-- Phase 5: Transformer Architecture
-- Phase 6: Training Infrastructure
-- Phase 7: Text Generation
 
 ## Requirements
 
