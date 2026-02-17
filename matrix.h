@@ -169,4 +169,17 @@ Matrix matrix_relu(Matrix m);
  */
 Matrix matrix_softmax(Matrix m);
 
+/**
+ * matrix_copy - Create a deep copy of a matrix
+ * @m: Matrix to be copied
+ * 
+ * Returns: A new Matrix structure containing the same dimensions and data
+ * 
+ * Note: 
+ *  - Allocates new memory for the data array.
+ *  - Must call free_matrix() on the returned matrix to prevent leaks.
+ *  - Useful for preserving an original matrix before performing in-place transformations or destructive operations.
+ */
+Matrix matrix_copy(Matrix m);
+
 #endif // MATRIX_H
