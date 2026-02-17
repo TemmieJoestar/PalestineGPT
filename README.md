@@ -8,7 +8,6 @@ Building a Large Language Model (LLM) with Transformer architecture from scratch
 - Custom matrix operations library
 - Zero memory leaks (valgrind verified)
 - Comprehensive test suite (9 tests)
-- Professional build system
 
 **Mathematical Foundations** IN PROGRESS
 - Linear Algebra -> DONE.
