@@ -1,19 +1,27 @@
 // main.c
 #include <stdio.h>
 #include "matrix.h"
-
+#include "gradient_descent.h"
+// Testing
 int main() {
-    printf("=== Matrix Library Demo ===\n\n");
+
+Matrix Input = create_matrix(1, 3);
+set_value(Input, 0, 0, 1.0f);
+set_value(Input, 0, 1, 2.0f);
+set_value(Input, 0, 2, 3.0f);
+
+
+Matrix Initial_weight = create_matrix(3, 1);
+set_value(Initial_weight, 0, 0, 0.1f);
+set_value(Initial_weight, 1, 0, 0.1f);
+set_value(Initial_weight, 2, 0, 0.1f);
+
+Matrix Target = create_matrix(1, 1);
+set_value(Target, 0, 0, 14.0f);
     
-    // Example: Create and print a matrix
-    Matrix A = create_matrix(3, 3);
-    set_value(A, 0, 0, 1.0f);
-    set_value(A, 1, 1, 5.0f);
-    set_value(A, 2, 2, 9.0f);
+train(Input, Initial_weight, Target, 10, 0.01f);
     
-    printf("Sample matrix:\n");
-    print_matrix(A);
-    
-    free_matrix(A);
-    return 0;
+free_matrix(Input);
+free_matrix(Initial_weight);
+free_matrix(Target);
 }
