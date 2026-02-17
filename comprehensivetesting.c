@@ -22,6 +22,7 @@ void test_matrix_hadamard();
 void test_matrix_relu();
 void test_matrix_softmax();
 void test_matrix_scalar_multiply(); 
+void test_matrix_copy();
 
 int main() {
     printf(BOLD("=== Matrix Library Tests ===\n\n"));
@@ -34,6 +35,7 @@ int main() {
     test_matrix_relu();
     test_matrix_softmax();
     test_matrix_scalar_multiply();
+    test_matrix_copy();
     
     printf(GREEN_TEXT("\n=== All Tests Passed! ===\n"));
     return 0;
@@ -350,5 +352,36 @@ void test_matrix_scalar_multiply() {
     // Clean up
     free_matrix(A);
     free_matrix(C);
+    printf(GREEN_TEXT("PASSED\n"));
+}
+
+// Test 9: Matrix Copy
+void test_matrix_copy() {
+    printf(BOLD("Testing matrix_copy... "));
+    
+    Matrix A = create_matrix(2, 2);
+    set_value(A, 0, 0, 1.0f); set_value(A, 0, 1, 2.0f);
+    set_value(A, 1, 0, 3.0f); set_value(A, 1, 1, 4.0f);
+    
+    Matrix B = matrix_copy(A);
+    
+    // Check values match
+    if (!float_equals(get_value(B, 0, 0), 1.0f) ||
+        !float_equals(get_value(B, 0, 1), 2.0f) ||
+        !float_equals(get_value(B, 1, 0), 3.0f) ||
+        !float_equals(get_value(B, 1, 1), 4.0f)) {
+        printf(RED_TEXT("FAILED: Values don't match\n"));
+        exit(1);
+    }
+    
+    // Check it's a DEEP copy (different memory)
+    set_value(B, 0, 0, 99.0f);
+    if (!float_equals(get_value(A, 0, 0), 1.0f)) {
+        printf(RED_TEXT("FAILED: Not a deep copy!\n"));
+        exit(1);
+    }
+    
+    free_matrix(A);
+    free_matrix(B);
     printf(GREEN_TEXT("PASSED\n"));
 }
