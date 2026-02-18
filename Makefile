@@ -18,26 +18,29 @@ ALL_HEADERS = $(MATRIX_HDR) $(GRADIENT_HDR)
 all: main
 
 # Standard main target rule
+# Uses filter-out to ensure if main.c is in ALL_SOURCES, it isn't doubled
 main: main.c $(ALL_SOURCES) $(ALL_HEADERS)
-	$(CC) $(CFLAGS) main.c $(ALL_SOURCES) -o main $(LDFLAGS)
+	$(CC) $(CFLAGS) main.c $(filter-out main.c, $(ALL_SOURCES)) -o main $(LDFLAGS)
 
 # Custom FILE.c target rule
+# filter-out prevents the "multiple definition" error by removing the target 
+# from the list of dependencies if it's already there.
 %.run: %.c $(ALL_SOURCES) $(ALL_HEADERS)
-	$(CC) $(CFLAGS) $< $(ALL_SOURCES) -o $* $(LDFLAGS) 
+	$(CC) $(CFLAGS) $< $(filter-out $<, $(ALL_SOURCES)) -o $* $(LDFLAGS) 
 	./$*
 
 # Compile and run tests
 test: comprehensivetesting.c $(ALL_SOURCES) $(ALL_HEADERS)
-	$(CC) $(CFLAGS) comprehensivetesting.c $(ALL_SOURCES) -o test $(LDFLAGS)
+	$(CC) $(CFLAGS) comprehensivetesting.c $(filter-out comprehensivetesting.c, $(ALL_SOURCES)) -o test $(LDFLAGS)
 	./test
 
 # Dynamic Memcheck Rule
 %.memcheck: %.c $(ALL_SOURCES) $(ALL_HEADERS)
-	$(CC) $(CFLAGS) $< $(ALL_SOURCES) -o $*.mem $(LDFLAGS)
+	$(CC) $(CFLAGS) $< $(filter-out $<, $(ALL_SOURCES)) -o $*.mem $(LDFLAGS)
 	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./$*.mem
 
 memcheck: comprehensivetesting.c $(ALL_SOURCES) $(ALL_HEADERS)
-	$(CC) $(CFLAGS) comprehensivetesting.c $(ALL_SOURCES) -o test $(LDFLAGS)
+	$(CC) $(CFLAGS) comprehensivetesting.c $(filter-out comprehensivetesting.c, $(ALL_SOURCES)) -o test $(LDFLAGS)
 	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./test
 
 help:
