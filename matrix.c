@@ -80,18 +80,49 @@ void print_matrix(Matrix m) {
     }
 }
 
-Matrix matrix_relu(Matrix m) { 
-    int total = m.rows * m.cols;
-    Matrix c = create_matrix(m.rows, m.cols);
+Matrix matrix_relu(Matrix input) { 
+    int total = input.rows * input.cols;
+    Matrix output = create_matrix(input.rows, input.cols);
 
     for (int i = 0; i < total; i++) {
-        if (m.data[i] < 0.0f) {
-            c.data[i] = 0.0f;
+        if (input.data[i] < 0.0f) {
+            output.data[i] = 0.0f;
         } else {
-            c.data[i] = m.data[i];
+            output.data[i] = input.data[i];
         }
     }
-    return c;
+    return output;
+}
+
+Matrix matrix_relu_derivative(Matrix Hidden_raw, Matrix Gradient_Hidden){
+    if (Hidden_raw.rows != Gradient_Hidden.rows || Hidden_raw.cols != Gradient_Hidden.cols) {
+        fprintf(stderr, RED_TEXT("Error: Matrices must be the same size!\n"));
+        exit(1);
+    }
+
+    int total = Hidden_raw.rows * Hidden_raw.cols;
+    Matrix output = create_matrix(Hidden_raw.rows,Hidden_raw.cols);
+
+    for (int i = 0; i < total; i++){
+        if (Hidden_raw.data[i] > 0) {
+            output.data[i] = Gradient_Hidden.data[i];
+        } else {
+            output.data[i] = 0.0f;
+        }
+    }
+    return output;
+}
+
+
+Matrix matrix_sigmoid(Matrix input){
+    int total = input.rows * input.cols;
+    Matrix output = create_matrix(input.rows,input.cols);
+
+    for (int i = 0; i < total; i++){
+        float sigmoid_equation = 1.0f / (1.0f + expf(-input.data[i]));
+        output.data[i] = sigmoid_equation;
+    }
+    return output;
 }
 
 Matrix matrix_softmax(Matrix m) { 

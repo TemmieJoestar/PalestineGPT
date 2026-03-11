@@ -3,6 +3,8 @@
 #include <math.h>
 #include "matrix.h"
 
+#define EPSILON 1e-7f // Value close to 0 
+
 Matrix forward_pass(Matrix Weights, Matrix Input) {
     Matrix Prediction = matrix_multiply(Input, Weights);
     return Prediction;
@@ -19,9 +21,46 @@ Matrix backward_pass(Matrix Prediction, Matrix Input, Matrix Target) {
     return Gradient; 
 }
 
-float calculate_error(Matrix Prediction, Matrix Target) {
+void backward_pass_2layer(
+    Matrix Output, Matrix Hidden, Matrix Hidden_raw, Matrix Input, Matrix Target, Matrix Weights_2, 
+    Matrix *Grad_W1_out, Matrix *Grad_W2_out, Matrix *Grad_B1_out, Matrix *Grad_B2_out){   
+        // Compute error
+        float diff = get_value(Output,0,0) - get_value(Target,0,0);
+        Matrix Gradient_B2 = create_matrix(1, 1);
+        set_value(Gradient_B2, 0, 0, 2.0f * diff);
+
+        
+        // Gradient for Weights_2
+        Matrix Hidden_T = matrix_transpose(Hidden);
+        Matrix Gradient_W2 = matrix_scalar_multiply(Hidden_T, (2.0f*diff));
+        free_matrix(Hidden_T);
+        
+        // Flow gradient back through Weights_2
+        Matrix Weights_2_T = matrix_transpose(Weights_2);
+        Matrix Gradient_Hidden = matrix_scalar_multiply(Weights_2_T, 2.0f*diff);
+        Matrix Gradient_Hidden_masked = matrix_relu_derivative(Hidden_raw,Gradient_Hidden);
+        Matrix Gradient_B1 = matrix_copy(Gradient_Hidden_masked);
+        free_matrix(Weights_2_T);
+        free_matrix(Gradient_Hidden);
+        
+        // Gradient for Weights_1
+        Matrix Input_T = matrix_transpose(Input);
+        Matrix Gradient_W1 = matrix_multiply(Input_T, Gradient_Hidden_masked);
+        free_matrix(Input_T);
+        free_matrix(Gradient_Hidden_masked);
+        
+        // Return via pointers
+        *Grad_W1_out = Gradient_W1; 
+        *Grad_W2_out = Gradient_W2;
+        *Grad_B1_out = Gradient_B1;
+        *Grad_B2_out = Gradient_B2;
+        *Grad_B1_out = Gradient_B1;
+        *Grad_B2_out = Gradient_B2;
+    }
+
+float mean_squared_error(Matrix Prediction, Matrix Target) {
     if (Prediction.rows != Target.rows || Prediction.cols != Target.cols) {
-        fprintf(stderr,RED_TEXT("Error: Matrices must be the same size to calculate error !\n"));
+        fprintf(stderr,RED_TEXT("Error: Matrices must be the same size to Mean Squared Error (M.E.S) !\n"));
         exit(1);
     }
 
@@ -36,6 +75,22 @@ float calculate_error(Matrix Prediction, Matrix Target) {
     return (sum/total);
 }
 
+float cross_entropy_loss(Matrix Prediction, Matrix Target){
+    if (Prediction.rows != Target.rows || Prediction.cols != Target.cols) {
+        fprintf(stderr,RED_TEXT("Error: Matrices must be the same size for Cross Entropy Loss !\n"));
+        exit(1);
+    }
+    int total = Prediction.rows * Prediction.cols;
+    float sum = 0.0f;
+    for (int i = 0; i < total; i++){
+        float pred = Prediction.data[i];
+        float targ = Target.data[i];
+        float diff = (targ * logf(pred + EPSILON));
+        sum += diff;
+    }
+    return (-sum/total);
+}
+
 Matrix update_weights(Matrix Weights, Matrix Gradient, float learning_rate) {
     Matrix Scaled_Grad = matrix_scalar_multiply(Gradient, learning_rate);
     Matrix New_Weights = matrix_subtraction(Weights, Scaled_Grad);
@@ -44,6 +99,26 @@ Matrix update_weights(Matrix Weights, Matrix Gradient, float learning_rate) {
     return New_Weights;
 }
 
+Matrix forward_pass_2layer(Matrix Input, Matrix Weights_1, Matrix Weights_2, Matrix Bias_1, Matrix Bias_2, Matrix *Hidden_out, Matrix *Hidden_raw_out){
+    Matrix Hidden_raw_temp = matrix_multiply(Input, Weights_1);
+    Matrix Hidden_raw = matrix_addition(Hidden_raw_temp,Bias_1);
+    Matrix Hidden = matrix_relu(Hidden_raw);
+    free_matrix(Hidden_raw_temp);
+    
+    Matrix Output_raw_temp = matrix_multiply(Hidden, Weights_2); 
+    Matrix Output_raw = matrix_addition(Output_raw_temp,Bias_2);
+    Matrix Output = matrix_sigmoid(Output_raw);
+    free_matrix(Output_raw_temp);
+    free_matrix(Output_raw);
+    
+    *Hidden_out = Hidden;
+    *Hidden_raw_out = Hidden_raw;
+    
+    return Output;
+}
+
+
+
 void train(Matrix Input, Matrix Weights, Matrix Target, int steps, float learning_rate) {
     
     
@@ -51,7 +126,7 @@ void train(Matrix Input, Matrix Weights, Matrix Target, int steps, float learnin
     
     for (int i = 0; i < steps; i++) {
         Matrix Prediction = forward_pass(current, Input);
-        float error = calculate_error(Prediction, Target);
+        float error = mean_squared_error(Prediction, Target);
         Matrix Gradient = backward_pass(Prediction, Input, Target);
         Matrix New_weights = update_weights(current, Gradient, learning_rate);
         
@@ -65,27 +140,34 @@ void train(Matrix Input, Matrix Weights, Matrix Target, int steps, float learnin
     free_matrix(current);
 }
 
+
+
+/*
 int main() {
 
-Matrix Input = create_matrix(1, 3);
-set_value(Input, 0, 0, 1.0f);
-set_value(Input, 0, 1, 2.0f);
-set_value(Input, 0, 2, 3.0f);
-
-
-Matrix Initial_weight = create_matrix(3, 1);
-set_value(Initial_weight, 0, 0, 0.1f);
-set_value(Initial_weight, 1, 0, 0.1f);
-set_value(Initial_weight, 2, 0, 0.1f);
-
-Matrix Target = create_matrix(1, 1);
-set_value(Target, 0, 0, 14.0f);
+Matrix Input = create_matrix(2, 3);
+Matrix Weights_1 = create_matrix(3, 2);
     
-train(Input, Initial_weight, Target, 10, 0.01f);
-//Matrix Prediction = matrix_multiply(Input, Initial_weight);
-//calculate_error(Prediction,Target);
+set_value(Input, 0, 0, 1.0f); set_value(Input, 0, 1, 2.0f); set_value(Input, 0, 2, 3.0f);
+set_value(Input, 1, 0, 4.0f); set_value(Input, 1, 1, 5.0f); set_value(Input, 1, 2, 6.0f);
     
+set_value(Weights_1, 0, 0, 7.0f); set_value(Weights_1, 0, 1, 8.0f);
+set_value(Weights_1, 1, 0, 9.0f); set_value(Weights_1, 1, 1, 10.0f);
+set_value(Weights_1, 2, 0, 11.0f); set_value(Weights_1, 2, 1, 12.0f);
+
+Matrix Weights_2 = create_matrix(2, 3);
+
+set_value(Weights_2, 0, 0, 15.0f); set_value(Weights_2, 0, 1, 6.0f); set_value(Weights_2, 0, 2, -30.0f);
+set_value(Weights_2, 1, 0, 14.0f); set_value(Weights_2, 1, 1, -5.0f); set_value(Weights_2, 1, 2, 2.0f);
+
+Matrix Result = forward_pass_2layer(Input, Weights_1, Weights_2);
+printf("Output:\n");
+print_matrix(Result);
+
 free_matrix(Input);
-free_matrix(Initial_weight);
-free_matrix(Target);
+free_matrix(Weights_1);
+free_matrix(Weights_2);
+free_matrix(Result);
+    
 }
+*/

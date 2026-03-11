@@ -150,12 +150,38 @@ Matrix matrix_scalar_multiply(Matrix m, float s);
 
 /**
  * matrix_relu - Apply ReLU activation function
- * @m: Input matrix
+ * @input: Input matrix
  * 
  * Returns: New matrix where result[i][j] = max(0, m[i][j])
  * ReLU (Rectified Linear Unit): negative values become 0, positive unchanged
  */
-Matrix matrix_relu(Matrix m);
+Matrix matrix_relu(Matrix input);
+
+
+/**
+ * matrix_relu_derivative - Apply ReLU derivative during backpropagation
+ * @Hidden_raw: Values before ReLU activation (pre-activation)
+ * @Gradient_Hidden: Gradient flowing back from the next layer
+ * 
+ * Returns: Masked gradient where values are kept only where Hidden_raw > 0
+ * 
+ * How it works:
+ *   - ReLU derivative is 1 for positive inputs, 0 for negative
+ *   - This masks the incoming gradient element-wise
+ *   - Formula: output[i] = Gradient_Hidden[i] if Hidden_raw[i] > 0, else 0
+ * 
+ * Note: Both matrices must have the same dimensions.
+ */
+Matrix matrix_relu_derivative(Matrix Hidden_raw, Matrix Gradient_Hidden);
+
+/**
+ * matrix_sigmoid - Apply Sigmoid activation function
+ * @input: Input matrix
+ * 
+ * Returns: New matrix where result[i][j] = 1 / (1 + expf(-x))
+ * Sigmoid: Maps any real number to range [0,1]. Negative values → close to 0, positive values → close to 1, zero → exactly 0.5 
+*/
+Matrix matrix_sigmoid(Matrix input);
 
 /**
  * matrix_softmax - Apply softmax activation function

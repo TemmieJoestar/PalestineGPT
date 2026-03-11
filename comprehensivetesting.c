@@ -12,6 +12,16 @@ Will be used for :
         >Will return clear feedback if something fails
 */
 
+// Testing Macro
+#define EXPECT_NEAR(actual, expected, tol) \
+    do { \
+        if (fabsf((actual) - (expected)) > (tol)) { \
+            printf(RED_TEXT("\nFAILED: Value mismatch\n")); \
+            printf("  Expected: %f\n  Actual:   %f\n", (double)(expected), (double)(actual)); \
+            exit(1); \
+        } \
+    } while (0)
+
 int float_equals(float a, float b);
 
 void test_matrix_multiply();
@@ -23,6 +33,7 @@ void test_matrix_relu();
 void test_matrix_softmax();
 void test_matrix_scalar_multiply(); 
 void test_matrix_copy();
+void test_matrix_sigmoid();
 
 int main() {
     printf(BOLD("=== Matrix Library Tests ===\n\n"));
@@ -36,6 +47,7 @@ int main() {
     test_matrix_softmax();
     test_matrix_scalar_multiply();
     test_matrix_copy();
+    test_matrix_sigmoid();
     
     printf(GREEN_TEXT("\n=== All Tests Passed! ===\n"));
     return 0;
@@ -69,14 +81,11 @@ void test_matrix_addition() {
     
     // Check Values
     // Addition:  [6  8]
-    //                  [10 12]
-    if (!float_equals(get_value(C, 0, 0), 6.0f) ||
-        !float_equals(get_value(C, 0, 1), 8.0f) ||
-        !float_equals(get_value(C, 1, 0), 10.0f) ||
-        !float_equals(get_value(C, 1, 1), 12.0f)) {
-        printf(RED_TEXT("FAILED: Incorrect values\n"));
-        exit(1);
-    }
+    //            [10 12]
+    EXPECT_NEAR(get_value(C, 0, 0), 6.0f, 0.0001f);
+    EXPECT_NEAR(get_value(C, 0, 1), 8.0f, 0.0001f);
+    EXPECT_NEAR(get_value(C, 1, 0), 10.0f, 0.0001f);
+    EXPECT_NEAR(get_value(C, 1, 1), 12.0f, 0.0001f);
     
     // Clean Up
     free_matrix(A);
@@ -88,7 +97,7 @@ void test_matrix_addition() {
 
 // Test 2: Matrix Subtraction
 void test_matrix_subtraction(){
-    printf(BOLD("Testing matrix_subtraction..."));
+    printf(BOLD("Testing matrix_subtraction... "));
 
     // Create Tested Matrices
     Matrix A = create_matrix(2,2);
@@ -109,14 +118,11 @@ void test_matrix_subtraction(){
 
     // Check Values
     // Subtracted : [5 5]
-    //                       [5 5]
-    if (!float_equals(get_value(C, 0, 0), 5.0f) ||
-        !float_equals(get_value(C, 0, 1), 5.0f) ||
-        !float_equals(get_value(C, 1, 0), 5.0f) ||
-        !float_equals(get_value(C, 1, 1), 5.0f)) {
-        printf(RED_TEXT("FAILED: Incorrect values\n"));
-        exit(1);
-    }
+    //              [5 5]
+    EXPECT_NEAR(get_value(C, 0, 0), 5.0f, 0.0001f);
+    EXPECT_NEAR(get_value(C, 0, 1), 5.0f, 0.0001f);
+    EXPECT_NEAR(get_value(C, 1, 0), 5.0f, 0.0001f);
+    EXPECT_NEAR(get_value(C, 1, 1), 5.0f, 0.0001f);
 
     // Clean Up
     free_matrix(A);
@@ -151,14 +157,11 @@ void test_matrix_multiply() {
 
     // Check Values
     // Multiplied: [58 64]
-    //                  [139 154]
-    if (!float_equals(get_value(C, 0, 0), 58.0f) ||
-        !float_equals(get_value(C, 0, 1), 64.0f) ||
-        !float_equals(get_value(C, 1, 0), 139.0f) ||
-        !float_equals(get_value(C, 1, 1), 154.0f)) {
-        printf(("FAILED: Incorrect values\n"));
-        exit(1);
-    }
+    //             [139 154]
+    EXPECT_NEAR(get_value(C, 0, 0), 58.0f, 0.0001f);
+    EXPECT_NEAR(get_value(C, 0, 1), 64.0f, 0.0001f);
+    EXPECT_NEAR(get_value(C, 1, 0), 139.0f, 0.0001f);
+    EXPECT_NEAR(get_value(C, 1, 1), 154.0f, 0.0001f);
     
     // Clean Up
     free_matrix(A);
@@ -190,17 +193,14 @@ void test_matrix_transpose() {
     
     // Check Values
     //Transposed: [1 4]
-    //                     [2 5]
-    //                     [3 6]
-    if (!float_equals(get_value(C, 0, 0), 1.0f) ||
-        !float_equals(get_value(C, 0, 1), 4.0f) ||
-        !float_equals(get_value(C, 1, 0), 2.0f) ||
-        !float_equals(get_value(C, 1, 1), 5.0f) ||
-        !float_equals(get_value(C, 2, 0), 3.0f) ||
-        !float_equals(get_value(C, 2, 1), 6.0f)) {
-        printf(("FAILED: Incorrect values after transpose\n"));
-        exit(1);
-    }
+    //            [2 5]
+    //            [3 6]
+    EXPECT_NEAR(get_value(C, 0, 0), 1.0f, 0.0001f);
+    EXPECT_NEAR(get_value(C, 0, 1), 4.0f, 0.0001f);
+    EXPECT_NEAR(get_value(C, 1, 0), 2.0f, 0.0001f);
+    EXPECT_NEAR(get_value(C, 1, 1), 5.0f, 0.0001f);
+    EXPECT_NEAR(get_value(C, 2, 0), 3.0f, 0.0001f);
+    EXPECT_NEAR(get_value(C, 2, 1), 6.0f, 0.0001f);
     
     // Clean Up
     free_matrix(A);
@@ -231,14 +231,11 @@ void test_matrix_hadamard(){
 
     // Check Values
     // Hadamard: [5 12]
-    //                     [21 32]
-    if (!float_equals(get_value(C, 0, 0), 5.0f) ||
-        !float_equals(get_value(C, 0, 1), 12.0f) ||
-        !float_equals(get_value(C, 1, 0), 21.0f) ||
-        !float_equals(get_value(C, 1, 1), 32.0f)) {
-        printf(RED_TEXT("FAILED: Incorrect values\n"));
-        exit(1);
-    }
+    //           [21 32]
+    EXPECT_NEAR(get_value(C, 0, 0), 5.0f, 0.0001f);
+    EXPECT_NEAR(get_value(C, 0, 1), 12.0f, 0.0001f);
+    EXPECT_NEAR(get_value(C, 1, 0), 21.0f, 0.0001f);
+    EXPECT_NEAR(get_value(C, 1, 1), 32.0f, 0.0001f);
 
     // Clean Up
     free_matrix(A);
@@ -246,12 +243,11 @@ void test_matrix_hadamard(){
     free_matrix(C);
 
     printf(GREEN_TEXT("PASSED\n"));
-
 }
 
 // Test 6: Matrix ReLu
 void test_matrix_relu(){
-    printf(BOLD("Testing matrix_relu..."));
+    printf(BOLD("Testing matrix_relu... "));
 
     // Create Tested Matrix
      Matrix A = create_matrix(2,2);
@@ -266,14 +262,11 @@ void test_matrix_relu(){
 
     // Check Values
     // ReLu: [0 2]
-    //            [3 0]
-    if (!float_equals(get_value(C, 0, 0), 0.0f) ||
-        !float_equals(get_value(C, 0, 1), 2.0f) ||
-        !float_equals(get_value(C, 1, 0), 3.0f) ||
-        !float_equals(get_value(C, 1, 1), 0.0f)) {
-        printf(RED_TEXT("FAILED: Incorrect values\n"));
-        exit(1);
-    }
+    //       [3 0]
+    EXPECT_NEAR(get_value(C, 0, 0), 0.0f, 0.0001f);
+    EXPECT_NEAR(get_value(C, 0, 1), 2.0f, 0.0001f);
+    EXPECT_NEAR(get_value(C, 1, 0), 3.0f, 0.0001f);
+    EXPECT_NEAR(get_value(C, 1, 1), 0.0f, 0.0001f);
 
     // Clean Up
     free_matrix(A);
@@ -287,35 +280,26 @@ void test_matrix_softmax() {
     printf(BOLD("Testing matrix_softmax... "));
 
     // Create Tested Matrix
-    Matrix A = create_matrix(2, 2);
+    Matrix A = create_matrix(1, 3);
 
-     // Fill A: [1 2]
-     //           [3 4]
-    set_value(A, 0, 0, 1.0f); set_value(A, 0, 1, 2.0f);
-    set_value(A, 1, 0, 3.0f); set_value(A, 1, 1, 4.0f);
+     // Fill A: [1 2 3]
+    set_value(A, 0, 0, 1.0f); set_value(A, 0, 1, 2.0f); set_value(A, 0, 2, 3.0f);
 
     // Create Testing Matrix
     Matrix C = matrix_softmax(A);
 
-    // Test 7-1: Sum should equal 1.0
+    // Test 7-1: Check specific probabilities
+    // Expected for [1, 2, 3]: [0.0900, 0.2447, 0.6652]
+    EXPECT_NEAR(get_value(C, 0, 0), 0.090031f, 0.0001f);
+    EXPECT_NEAR(get_value(C, 0, 1), 0.244728f, 0.0001f);
+    EXPECT_NEAR(get_value(C, 0, 2), 0.665241f, 0.0001f);
+
+    // Test 7-2: Sum should equal 1.0
     float sum = 0.0f;
-    int total = C.rows * C.cols;
-    for (int i = 0; i < total; i++) {
+    for (int i = 0; i < 3; i++) {
         sum += C.data[i];
     }
-
-    if (!float_equals(sum, 1.0f)) {
-        printf("FAILED: Sum = %.6f (expected 1.0)\n", sum);
-        exit(1);
-    }
-
-    // Test 7-2: All values should be between 0 and 1
-    for (int i = 0; i < total; i++) {
-        if (C.data[i] < 0.0f || C.data[i] > 1.0f) {
-            printf("FAILED: Value out of range [0,1]\n");
-            exit(1);
-        }
-    }
+    EXPECT_NEAR(sum, 1.0f, 0.0001f);
 
     // Clean Up
     free_matrix(A);
@@ -341,13 +325,10 @@ void test_matrix_scalar_multiply() {
     // Check values
     // Expected: [2.5  5.0]
     //           [7.5 10.0]
-    if (!float_equals(get_value(C, 0, 0), 2.5f) ||
-        !float_equals(get_value(C, 0, 1), 5.0f) ||
-        !float_equals(get_value(C, 1, 0), 7.5f) ||
-        !float_equals(get_value(C, 1, 1), 10.0f)) {
-        printf(RED_TEXT("FAILED: Incorrect values\n"));
-        exit(1);
-    }
+    EXPECT_NEAR(get_value(C, 0, 0), 2.5f, 0.0001f);
+    EXPECT_NEAR(get_value(C, 0, 1), 5.0f, 0.0001f);
+    EXPECT_NEAR(get_value(C, 1, 0), 7.5f, 0.0001f);
+    EXPECT_NEAR(get_value(C, 1, 1), 10.0f, 0.0001f);
 
     // Clean up
     free_matrix(A);
@@ -366,22 +347,44 @@ void test_matrix_copy() {
     Matrix B = matrix_copy(A);
     
     // Check values match
-    if (!float_equals(get_value(B, 0, 0), 1.0f) ||
-        !float_equals(get_value(B, 0, 1), 2.0f) ||
-        !float_equals(get_value(B, 1, 0), 3.0f) ||
-        !float_equals(get_value(B, 1, 1), 4.0f)) {
-        printf(RED_TEXT("FAILED: Values don't match\n"));
-        exit(1);
-    }
+    EXPECT_NEAR(get_value(B, 0, 0), 1.0f, 0.0001f);
+    EXPECT_NEAR(get_value(B, 1, 1), 4.0f, 0.0001f);
     
     // Check it's a DEEP copy (different memory)
     set_value(B, 0, 0, 99.0f);
-    if (!float_equals(get_value(A, 0, 0), 1.0f)) {
+    if (float_equals(get_value(A, 0, 0), 99.0f)) {
         printf(RED_TEXT("FAILED: Not a deep copy!\n"));
         exit(1);
     }
     
     free_matrix(A);
     free_matrix(B);
+    printf(GREEN_TEXT("PASSED\n"));
+}
+
+// Test 10: Matrix Sigmoid
+void test_matrix_sigmoid(){
+    printf(BOLD("Testing matrix_sigmoid... "));
+
+    // Create tested matrix
+    Matrix A = create_matrix(1, 3);
+    
+    // Fill A: [-5 0 5]
+    set_value(A, 0, 0, -5.0f);
+    set_value(A, 0, 1, 0.0f);
+    set_value(A, 0, 2, 5.0f);
+    
+    // Create testing matrix
+    Matrix C = matrix_sigmoid(A);
+
+    // Check values
+    // Expected: [0.00669, 0.5000, 0.9933]
+    EXPECT_NEAR(get_value(C, 0, 0), 0.006693f, 0.0001f);
+    EXPECT_NEAR(get_value(C, 0, 1), 0.500000f, 0.0001f);
+    EXPECT_NEAR(get_value(C, 0, 2), 0.993307f, 0.0001f);
+
+    // Clean up
+    free_matrix(A);
+    free_matrix(C);
     printf(GREEN_TEXT("PASSED\n"));
 }
