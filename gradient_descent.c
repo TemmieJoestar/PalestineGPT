@@ -99,6 +99,22 @@ Matrix update_weights(Matrix Weights, Matrix Gradient, float learning_rate) {
     return New_Weights;
 }
 
+Matrix update_weights_momentum(Matrix Weight, Matrix Gradient, Matrix *Velocity, float learning_rate, float momentum) {
+    Matrix Scaled_Velocity = matrix_scalar_multiply(*Velocity, momentum);
+    Matrix Scaled_Grad = matrix_scalar_multiply(Gradient, learning_rate);
+    Matrix New_Velocity = matrix_addition(Scaled_Velocity, Scaled_Grad);
+    Matrix New_Weights = matrix_subtraction(Weight, New_Velocity);
+
+    free_matrix(Scaled_Velocity);
+    free_matrix(Scaled_Grad);
+    free_matrix(*Velocity);
+    
+    *Velocity = New_Velocity;
+
+    return New_Weights;
+}
+
+
 Matrix forward_pass_2layer(Matrix Input, Matrix Weights_1, Matrix Weights_2, Matrix Bias_1, Matrix Bias_2, Matrix *Hidden_out, Matrix *Hidden_raw_out){
     Matrix Hidden_raw_temp = matrix_multiply(Input, Weights_1);
     Matrix Hidden_raw = matrix_addition(Hidden_raw_temp,Bias_1);

@@ -13,6 +13,7 @@
  * forward_pass - Compute the linear transformation (Inference)
  * @Weights: Matrix of model weights (N x 1)
  * @Input: Matrix of input features (1 x N)
+ * 
  *  Returns: Prediction matrix result of (Input × Weights)
  * Note: Returns a new matrix that requires freeing.
  */
@@ -27,6 +28,7 @@ Matrix forward_pass(Matrix Weights, Matrix Input);
  * @Bias_2: Prevent 0's values for Output_raw
  * @*Hidden_out: Store the Hidden_out value
  * @*Hidden_raw_out: Sotre the Hidden_raw value
+ * 
  *  Returns: Final output matrix after ReLU (hidden) and Sigmoid (output)
  * Note: Frees internal intermediate matrices; caller must free the returned result.
  */
@@ -37,6 +39,7 @@ Matrix forward_pass_2layer(Matrix Input, Matrix Weights_1, Matrix Weights_2, Mat
  * @Prediction: The output from forward_pass
  * @Input: The original input matrix used for the pass
  * @Target: The ground truth labels/values
+ * 
  *  Returns: Gradient matrix used to update weights
  * Formula: 2 -> (Prediction - Target) * Input^T
  * Note: Must free the returned gradient matrix.
@@ -68,6 +71,7 @@ void backward_pass_2layer(
  * mean_squared_error - Compute the Mean Squared Error (MSE)
  * @Prediction: The predicted matrix
  * @Target: The target matrix
+ * 
  *  Returns: Float representing (1/n) × Σ(prediction[i] - target[i])²
  */
 float mean_squared_error(Matrix Prediction, Matrix Target);
@@ -77,15 +81,33 @@ float mean_squared_error(Matrix Prediction, Matrix Target);
  * @Weights: Current weight matrix
  * @Gradient: Gradient calculated from backward_pass
  * @learning_rate: Step size for the update (alpha)
+ * 
  *  Returns: New Matrix with updated weights (Weights - (learning_rate * Gradient))
  * Note: Does not modify original; returns a new matrix that requires freeing.
  */
 Matrix update_weights(Matrix Weights, Matrix Gradient, float learning_rate);
 
+
+/**
+ * update_weights_momentum - Adjust weights using Gradient Descent with Momentum
+ * @Weight: Current weight matrix
+ * @Gradient: Gradient calculated from backward_pass
+ * @Velocity: Pointer to the velocity matrix (updated in-place)
+ * @learning_rate: Step size for the update (alpha)
+ * @momentum: Friction/decay constant for velocity, usually 0.9
+ *
+ * Return: New Matrix with updated weights.
+ * Note: Does not modify original Weights matrix; returns a new matrix 
+ * that requires freeing. Updates *Velocity in-place.
+ */
+Matrix update_weights_momentum(Matrix Weight, Matrix Gradient, Matrix *Velocity, float learning_rate, float momentum);
+
+
 /**
  * cross_entropy_loss - Measure classification performance
  * @Prediction: The predicted Matrix (probabilities)
  * @Target: The target Matrix (one-hot or labels)
+ * 
  *  Returns: Float representing -(1/n) × Σ(target[i] × log(prediction[i] + ε))
  * Note: Inputs must be normalized (e.g., via Softmax).
  */
