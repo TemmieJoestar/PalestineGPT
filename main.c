@@ -61,7 +61,7 @@ void train_xor() {
             set_value(Weights_2, i, j, ((float)rand()/(float)RAND_MAX) - 0.5f);
 
     int epochs = 100000;
-    float learning_rate = 0.1f;
+    float learning_rate = 0.05f;
     float momentum = 0.9f;
     
     for (int epoch = 0; epoch < epochs; epoch++) {
