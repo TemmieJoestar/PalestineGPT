@@ -101,16 +101,16 @@ Matrix update_weights(Matrix Weights, Matrix Gradient, float learning_rate) {
 
 Matrix update_weights_momentum(Matrix Weight, Matrix Gradient, Matrix *Velocity, float learning_rate, float momentum) {
     Matrix Scaled_Velocity = matrix_scalar_multiply(*Velocity, momentum);
-    Matrix Scaled_Grad = matrix_scalar_multiply(Gradient, learning_rate);
-    Matrix New_Velocity = matrix_addition(Scaled_Velocity, Scaled_Grad);
-    Matrix New_Weights = matrix_subtraction(Weight, New_Velocity);
-
+    Matrix New_Velocity = matrix_addition(Scaled_Velocity, Gradient);
+    
+    Matrix Update = matrix_scalar_multiply(New_Velocity, learning_rate);
+    Matrix New_Weights = matrix_subtraction(Weight, Update);
+    
     free_matrix(Scaled_Velocity);
-    free_matrix(Scaled_Grad);
+    free_matrix(Update);
     free_matrix(*Velocity);
     
     *Velocity = New_Velocity;
-
     return New_Weights;
 }
 
