@@ -155,35 +155,3 @@ void train(Matrix Input, Matrix Weights, Matrix Target, int steps, float learnin
     }
     free_matrix(current);
 }
-
-
-
-/*
-int main() {
-
-Matrix Input = create_matrix(2, 3);
-Matrix Weights_1 = create_matrix(3, 2);
-    
-set_value(Input, 0, 0, 1.0f); set_value(Input, 0, 1, 2.0f); set_value(Input, 0, 2, 3.0f);
-set_value(Input, 1, 0, 4.0f); set_value(Input, 1, 1, 5.0f); set_value(Input, 1, 2, 6.0f);
-    
-set_value(Weights_1, 0, 0, 7.0f); set_value(Weights_1, 0, 1, 8.0f);
-set_value(Weights_1, 1, 0, 9.0f); set_value(Weights_1, 1, 1, 10.0f);
-set_value(Weights_1, 2, 0, 11.0f); set_value(Weights_1, 2, 1, 12.0f);
-
-Matrix Weights_2 = create_matrix(2, 3);
-
-set_value(Weights_2, 0, 0, 15.0f); set_value(Weights_2, 0, 1, 6.0f); set_value(Weights_2, 0, 2, -30.0f);
-set_value(Weights_2, 1, 0, 14.0f); set_value(Weights_2, 1, 1, -5.0f); set_value(Weights_2, 1, 2, 2.0f);
-
-Matrix Result = forward_pass_2layer(Input, Weights_1, Weights_2);
-printf("Output:\n");
-print_matrix(Result);
-
-free_matrix(Input);
-free_matrix(Weights_1);
-free_matrix(Weights_2);
-free_matrix(Result);
-    
-}
-*/
