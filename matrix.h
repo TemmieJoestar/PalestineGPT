@@ -225,7 +225,7 @@ Matrix matrix_softmax(Matrix m);
  *  - Must call free_matrix() on the returned matrix to prevent leaks.
  *  - Useful for preserving an original matrix before performing in-place transformations or destructive operations.
  */
-Matrix matrix_copy(Matrix m);
+Matrix matrix_copy(Matrix Input);
 
 /* ============================================================================
  * DATA PREPROCESSING

@@ -249,12 +249,12 @@ Matrix matrix_hadamard(Matrix a, Matrix b) {
     return c;
 }
 
-Matrix matrix_copy(Matrix m) {
-    Matrix copy = create_matrix(m.rows, m.cols);
+Matrix matrix_copy(Matrix Input) {
+    Matrix copy = create_matrix(Input.rows, Input.cols);
     for (int i = 0; i < copy.rows; i++) {
         for (int j = 0; j < copy.cols; j++) {
             int index = (i * copy.cols) + j;
-            float result = m.data[index];
+            float result = Input.data[index];
             set_value(copy, i, j, result);
         }
     }
