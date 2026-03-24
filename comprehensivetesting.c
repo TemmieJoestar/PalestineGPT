@@ -32,25 +32,39 @@ void test_matrix_hadamard();
 void test_matrix_relu();
 void test_matrix_softmax();
 void test_matrix_scalar_multiply(); 
+void test_matrix_scalar_addition();
+void test_matrix_scalar_subtraction();
 void test_matrix_copy();
 void test_matrix_sigmoid();
+void test_matrix_normalize();
 
 int main() {
-    printf(BOLD("=== Matrix Library Tests ===\n\n"));
+    printf(BOLD("=== Matrix Library Tests ===\n"));
     
+    printf(MAGENTA_TEXT("\n--- Core Matrix Arithmetic ---\n"));
     test_matrix_multiply();
     test_matrix_addition();
     test_matrix_subtraction();
-    test_matrix_transpose();
     test_matrix_hadamard();
-    test_matrix_relu();
-    test_matrix_softmax();
+    
+    printf(MAGENTA_TEXT("\n--- Transformations & Scalars ---\n"));
+    test_matrix_transpose();
     test_matrix_scalar_multiply();
+    test_matrix_scalar_addition();
+    test_matrix_scalar_subtraction();
     test_matrix_copy();
+    
+    printf(MAGENTA_TEXT("\n--- Neural Network Activations ---\n"));
+    test_matrix_relu();
     test_matrix_sigmoid();
+    test_matrix_softmax();
+    
+    printf(MAGENTA_TEXT("\n--- Data Preprocessing ---\n"));
+    test_matrix_normalize();
     
     printf(GREEN_TEXT("\n=== All Tests Passed! ===\n"));
     return 0;
+
 }
 
 // Helper function to compare floats
@@ -187,7 +201,7 @@ void test_matrix_transpose() {
     
     // Check dimensions
     if (C.rows != 3 || C.cols != 2) {
-        printf(RED_TEXT("FAILED: Wrong dimensions (expected 3×2, got %d×%d)\n"), C.rows, C.cols);
+        printf(RED_TEXT("FAILED: Wrong dimensions (expected 3x2, got %dx%d)\n"), C.rows, C.cols);
         exit(1);
     }
     
@@ -386,5 +400,92 @@ void test_matrix_sigmoid(){
     // Clean up
     free_matrix(A);
     free_matrix(C);
+    printf(GREEN_TEXT("PASSED\n"));
+}
+
+// Test 11: Scalar Addition
+void test_matrix_scalar_addition() {
+    printf(BOLD("Testing matrix_scalar_addition... "));
+
+    Matrix A = create_matrix(2, 2);
+    // Fill A: [1.0, 2.0]
+    //         [3.0, 4.0]
+    set_value(A, 0, 0, 1.0f); set_value(A, 0, 1, 2.0f);
+    set_value(A, 1, 0, 3.0f); set_value(A, 1, 1, 4.0f);
+
+    Matrix C = matrix_scalar_addition(A, 10.5f);
+
+    // Expected: [11.5, 12.5]
+    //           [13.5, 14.5]
+    EXPECT_NEAR(get_value(C, 0, 0), 11.5f, 0.0001f);
+    EXPECT_NEAR(get_value(C, 0, 1), 12.5f, 0.0001f);
+    EXPECT_NEAR(get_value(C, 1, 0), 13.5f, 0.0001f);
+    EXPECT_NEAR(get_value(C, 1, 1), 14.5f, 0.0001f);
+
+    free_matrix(A);
+    free_matrix(C);
+    printf(GREEN_TEXT("PASSED\n"));
+}
+
+// Test 12: Scalar Subtraction
+void test_matrix_scalar_subtraction() {
+    printf(BOLD("Testing matrix_scalar_subtraction... "));
+
+    Matrix A = create_matrix(2, 2);
+    // Fill A: [10.0, 20.0]
+    //         [30.0, 40.0]
+    set_value(A, 0, 0, 10.0f); set_value(A, 0, 1, 20.0f);
+    set_value(A, 1, 0, 30.0f); set_value(A, 1, 1, 40.0f);
+
+    Matrix C = matrix_scalar_subtraction(A, 5.0f);
+
+    // Expected: [5.0, 15.0]
+    //           [25.0, 35.0]
+    EXPECT_NEAR(get_value(C, 0, 0), 5.0f, 0.0001f);
+    EXPECT_NEAR(get_value(C, 0, 1), 15.0f, 0.0001f);
+    EXPECT_NEAR(get_value(C, 1, 0), 25.0f, 0.0001f);
+    EXPECT_NEAR(get_value(C, 1, 1), 35.0f, 0.0001f);
+
+    free_matrix(A);
+    free_matrix(C);
+    printf(GREEN_TEXT("PASSED\n"));
+}
+
+// Test 13: Matrix Normalization
+void test_matrix_normalize() {
+    printf(BOLD("Testing matrix_normalize... "));
+
+    // Scenario 1: Standard Normalization
+    // Data: [10.0, 30.0, 50.0] -> Range is 40.0
+    Matrix A = create_matrix(1, 3);
+    set_value(A, 0, 0, 10.0f); 
+    set_value(A, 0, 1, 30.0f); 
+    set_value(A, 0, 2, 50.0f); 
+
+    Matrix C = matrix_normalize(A);
+
+    // Expected: [(10-10)/40, (30-10)/40, (50-10)/40] -> [0.0, 0.5, 1.0]
+    EXPECT_NEAR(get_value(C, 0, 0), 0.0f, 0.0001f);
+    EXPECT_NEAR(get_value(C, 0, 1), 0.5f, 0.0001f);
+    EXPECT_NEAR(get_value(C, 0, 2), 1.0f, 0.0001f);
+
+    // Scenario 2: Zero Range Edge Case
+    // Data: [7.0, 7.0] -> Should print error and return copy
+    Matrix B = create_matrix(1, 2);
+    set_value(B, 0, 0, 7.0f);
+    set_value(B, 0, 1, 7.0f);
+    
+    printf(CYAN_TEXT("\n(Next warning message is expected behavior)\n"));
+    Matrix D = matrix_normalize(B);
+    
+    EXPECT_NEAR(get_value(D, 0, 0), 7.0f, 0.0001f);
+    EXPECT_NEAR(get_value(D, 0, 1), 7.0f, 0.0001f);
+
+    // Clean Up
+    free_matrix(A);
+    free_matrix(C);
+    free_matrix(B);
+    free_matrix(D);
+
     printf(GREEN_TEXT("PASSED\n"));
 }

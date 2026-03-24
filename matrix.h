@@ -5,6 +5,9 @@
 // Text formatting macros
 #define RED_TEXT(x) "\033[31;1m" x "\033[0m"
 #define GREEN_TEXT(x) "\033[92;1m" x "\033[0m"
+#define YELLOW_TEXT(x) "\033[33;1m" x "\033[0m"
+#define CYAN_TEXT(x) "\033[36;1m" x "\033[0m"
+#define MAGENTA_TEXT(x) "\033[35;1m" x "\033[0m"
 #define BOLD(x) "\033[1m" x "\033[0m"
 
 /**
@@ -144,6 +147,22 @@ Matrix matrix_transpose(Matrix m);
  */
 Matrix matrix_scalar_multiply(Matrix m, float s);
 
+/**
+ * matrix_scalar_addition - Add a scalar to all elements
+ * @m: Matrix to modify
+ * @s: Scalar value to add
+ * Returns: New matrix where result[i][j] = m[i][j] + s
+ */
+Matrix matrix_scalar_addition(Matrix m, float s);
+
+/**
+ * matrix_scalar_subtraction - Subtract a scalar from all elements
+ * @m: Matrix to modify
+ * @s: Scalar value to subtract
+ * Returns: New matrix where result[i][j] = m[i][j] - s
+ */
+Matrix matrix_scalar_subtraction(Matrix m, float s);
+
 /* ============================================================================
  * ACTIVATION FUNCTIONS (NEURAL NETWORKS)
  * ============================================================================ */
@@ -208,4 +227,17 @@ Matrix matrix_softmax(Matrix m);
  */
 Matrix matrix_copy(Matrix m);
 
+/* ============================================================================
+ * DATA PREPROCESSING
+ * ============================================================================ */
+
+/**
+ * matrix_normalize - Scale all values to the range [0, 1]
+ * @m: Input matrix to be normalized
+ * * Returns: A new Matrix where: result = (x - min) / (max - min)
+ * * Note: 
+ * - If range is 0 (all values same), prints an error to stderr and returns a copy.
+ * - Allocates new memory; caller must call free_matrix() on the result.
+ */
+Matrix matrix_normalize(Matrix m);
 #endif // MATRIX_H

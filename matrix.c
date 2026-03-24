@@ -200,18 +200,36 @@ Matrix matrix_transpose(Matrix m) {
     return c;
 }
 
-Matrix matrix_scalar_multiply(Matrix m, float scalar) {  
-    Matrix c = create_matrix(m.rows, m.cols);
+Matrix matrix_scalar_multiply(Matrix Input, float scalar) {  
+    Matrix Result = create_matrix(Input.rows, Input.cols);
+    int total = Input.rows * Input.cols;
 
-    for (int i = 0; i < m.rows; i++) {
-        for (int j = 0; j < m.cols; j++) {
-            int index = (i * m.cols) + j;
-            float result = m.data[index] * scalar; 
-            set_value(c, i, j, result);
-        }
+    for (int i = 0; i < total; i++){
+        Result.data[i] = Input.data[i] * scalar;
     }
-    return c;
+    return Result;
 }
+
+Matrix matrix_scalar_subtraction(Matrix Input, float scalar){
+    Matrix Result = create_matrix(Input.rows, Input.cols);
+    int total = Input.rows * Input.cols;
+
+    for (int i = 0; i < total; i++){
+        Result.data[i] = Input.data[i] - scalar;
+    }
+    return Result;
+}
+
+Matrix matrix_scalar_addition(Matrix Input, float scalar){
+    Matrix Result = create_matrix(Input.rows, Input.cols);
+    int total = Input.rows * Input.cols;
+
+    for (int i = 0; i < total; i++){
+        Result.data[i] = Input.data[i] + scalar;
+    }
+    return Result;
+}
+
 
 Matrix matrix_hadamard(Matrix a, Matrix b) { 
     if (a.rows != b.rows || a.cols != b.cols) {
@@ -241,4 +259,31 @@ Matrix matrix_copy(Matrix m) {
         }
     }
     return copy;
+}
+
+Matrix matrix_normalize(Matrix Dataset) {
+    int total = Dataset.rows * Dataset.cols;
+    if (total <= 0) return create_matrix(0, 0);
+
+    float max = Dataset.data[0];
+    float min = Dataset.data[0];
+
+    for (int i = 1; i < total; i++) {
+        if (Dataset.data[i] > max) max = Dataset.data[i];
+        if (Dataset.data[i] < min) min = Dataset.data[i];
+    }
+
+    float range = max - min;
+
+    if (range == 0.0f) {
+        fprintf(stderr, YELLOW_TEXT("Warning: Range is 0! Returning a copy of Dataset\n"));
+        return matrix_copy(Dataset);
+    }
+
+    Matrix Temp = matrix_scalar_subtraction(Dataset, min);
+    Matrix Result = matrix_scalar_multiply(Temp, (1.0f / range));
+
+    free_matrix(Temp);
+    
+    return Result;
 }
