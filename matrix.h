@@ -145,7 +145,7 @@ Matrix matrix_transpose(Matrix m);
  * 
  * Returns: New matrix where result[i][j] = m[i][j] * s
  */
-Matrix matrix_scalar_multiply(Matrix m, float s);
+Matrix matrix_scalar_multiply(Matrix Input, float scalar);
 
 /**
  * matrix_scalar_addition - Add a scalar to all elements
@@ -153,7 +153,7 @@ Matrix matrix_scalar_multiply(Matrix m, float s);
  * @s: Scalar value to add
  * Returns: New matrix where result[i][j] = m[i][j] + s
  */
-Matrix matrix_scalar_addition(Matrix m, float s);
+Matrix matrix_scalar_addition(Matrix Input, float scalar);
 
 /**
  * matrix_scalar_subtraction - Subtract a scalar from all elements
@@ -161,7 +161,7 @@ Matrix matrix_scalar_addition(Matrix m, float s);
  * @s: Scalar value to subtract
  * Returns: New matrix where result[i][j] = m[i][j] - s
  */
-Matrix matrix_scalar_subtraction(Matrix m, float s);
+Matrix matrix_scalar_subtraction(Matrix Input, float scalar);
 
 /* ============================================================================
  * ACTIVATION FUNCTIONS (NEURAL NETWORKS)
