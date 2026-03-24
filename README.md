@@ -33,7 +33,7 @@ Building a Large Language Model (LLM) with Transformer architecture from scratch
 - Gradient descent (weight updates).
 - Training loop.
 
-## Building
+## Building (on windows need git bash)
 ```bash
 # Shows available Target, and how to use them.
 make help
