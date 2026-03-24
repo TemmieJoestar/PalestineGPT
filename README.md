@@ -54,6 +54,7 @@ make memcheck
 make FILE.memcheck
 
 # Remove compliled executable files. (Only -> 'main', 'comprehensivetesting', 'gradient_descent' and 'test).
+make clean
 ```
 
 ## Testing
