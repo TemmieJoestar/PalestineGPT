@@ -50,11 +50,11 @@ void free_matrix(Matrix m);
 
 /**
  * print_matrix - Display matrix to stdout
- * @m: Matrix to print
+ * @Input: Matrix to print
  * 
  * Prints matrix in readable format with 2 decimal places
  */
-void print_matrix(Matrix m);
+void print_matrix(Matrix Input);
 
 /**
  * set_value - Set element at position (r, c)
@@ -169,12 +169,12 @@ Matrix matrix_scalar_subtraction(Matrix Input, float scalar);
 
 /**
  * matrix_relu - Apply ReLU activation function
- * @input: Input matrix
+ * @Input: Input matrix
  * 
  * Returns: New matrix where result[i][j] = max(0, m[i][j])
  * ReLU (Rectified Linear Unit): negative values become 0, positive unchanged
  */
-Matrix matrix_relu(Matrix input);
+Matrix matrix_relu(Matrix Input);
 
 
 /**
@@ -195,16 +195,16 @@ Matrix matrix_relu_derivative(Matrix Hidden_raw, Matrix Gradient_Hidden);
 
 /**
  * matrix_sigmoid - Apply Sigmoid activation function
- * @input: Input matrix
+ * @Input: Input matrix
  * 
  * Returns: New matrix where result[i][j] = 1 / (1 + expf(-x))
  * Sigmoid: Maps any real number to range [0,1]. Negative values → close to 0, positive values → close to 1, zero → exactly 0.5 
 */
-Matrix matrix_sigmoid(Matrix input);
+Matrix matrix_sigmoid(Matrix Input);
 
 /**
  * matrix_softmax - Apply softmax activation function
- * @m: Input matrix
+ * @Input: Input matrix
  * 
  * Returns: New matrix where values are converted to probability distribution
  * Properties:
@@ -212,7 +212,7 @@ Matrix matrix_sigmoid(Matrix input);
  *   - Sum of all values = 1.0
  *   - Uses numerical stability trick (subtract max before exp)
  */
-Matrix matrix_softmax(Matrix m);
+Matrix matrix_softmax(Matrix Input);
 
 /**
  * matrix_copy - Create a deep copy of a matrix
