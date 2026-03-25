@@ -12,43 +12,39 @@ SRC_DIR = src
 INC_DIR = include
 TEST_DIR = tests
 
-MATRIX_SRC = $(SRC_DIR)/matrix.c
-MATRIX_HDR = $(INC_DIR)/matrix.h
-
-GRADIENT_SRC = $(SRC_DIR)/gradient_descent.c
-GRADIENT_HDR = $(INC_DIR)/gradient_descent.h
-
-ALL_SOURCES = $(MATRIX_SRC) $(GRADIENT_SRC)
-ALL_HEADERS = $(MATRIX_HDR) $(GRADIENT_HDR)
+# Find all .c files in src/ except main.c to avoid multiple 'main' definitions
+LIB_SOURCES = $(SRC_DIR)/matrix.c $(SRC_DIR)/gradient_descent.c
+ALL_HEADERS = $(INC_DIR)/matrix.h $(INC_DIR)/gradient_descent.h
 
 all: main
 
-main: $(SRC_DIR)/main.c $(ALL_SOURCES) $(ALL_HEADERS)
-	$(CC) $(CFLAGS) $< $(ALL_SOURCES) -o main $(LDFLAGS)
+main: $(SRC_DIR)/main.c $(LIB_SOURCES) $(ALL_HEADERS)
+	$(CC) $(CFLAGS) $(SRC_DIR)/main.c $(LIB_SOURCES) -o main $(LDFLAGS)
 
-%.run: %.c $(ALL_SOURCES) $(ALL_HEADERS)
-	$(CC) $(CFLAGS) $< $(ALL_SOURCES) -o $* $(LDFLAGS) 
+# Updated rule: look in src/ for the .c file
+%.run: $(SRC_DIR)/%.c $(LIB_SOURCES) $(ALL_HEADERS)
+	$(CC) $(CFLAGS) $< $(LIB_SOURCES) -o $* $(LDFLAGS) 
 	./$*
 
-test: $(TEST_DIR)/comprehensivetesting.c $(ALL_SOURCES) $(ALL_HEADERS)
-	$(CC) $(CFLAGS) $< $(ALL_SOURCES) -o test $(LDFLAGS)
+test: $(TEST_DIR)/comprehensivetesting.c $(LIB_SOURCES) $(ALL_HEADERS)
+	$(CC) $(CFLAGS) $< $(LIB_SOURCES) -o test $(LDFLAGS)
 	./test
 
-%.memcheck: %.c $(ALL_SOURCES) $(ALL_HEADERS)
-	$(CC) $(CFLAGS) $< $(ALL_SOURCES) -o $*.mem $(LDFLAGS)
+%.memcheck: $(SRC_DIR)/%.c $(LIB_SOURCES) $(ALL_HEADERS)
+	$(CC) $(CFLAGS) $< $(LIB_SOURCES) -o $*.mem $(LDFLAGS)
 	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./$*.mem
 
-memcheck: $(TEST_DIR)/comprehensivetesting.c $(ALL_SOURCES) $(ALL_HEADERS)
-	$(CC) $(CFLAGS) $< $(ALL_SOURCES) -o test $(LDFLAGS)
+memcheck: $(TEST_DIR)/comprehensivetesting.c $(LIB_SOURCES) $(ALL_HEADERS)
+	$(CC) $(CFLAGS) $< $(LIB_SOURCES) -o test $(LDFLAGS)
 	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./test
 
 help:
 	@echo -e "$(MAGENTA)Available targets:$(RESET)"
 	@printf "  $(CYAN)%-20s$(RESET) - %s\n" "make" "Build main program"
-	@printf "  $(CYAN)%-20s$(RESET) - %s\n" "make FILE.run" "Compile and run 'FILE.c'"
-	@printf "  $(CYAN)%-20s$(RESET) - %s\n" "make test" "Compile and run the 'comprehensivetesting.c' suite"
-	@printf "  $(CYAN)%-20s$(RESET) - %s\n" "make memcheck" "Run valgrind on 'comprehensivetesting.c'"
-	@printf "  $(CYAN)%-20s$(RESET) - %s\n" "make FILE.memcheck" "Run valgrind on 'FILE.c'"
+	@printf "  $(CYAN)%-20s$(RESET) - %s\n" "make main.run" "Compile and run 'src/main.c'"
+	@printf "  $(CYAN)%-20s$(RESET) - %s\n" "make test" "Compile and run the 'tests/comprehensivetesting.c' suite"
+	@printf "  $(CYAN)%-20s$(RESET) - %s\n" "make memcheck" "Run valgrind on 'tests/comprehensivetesting.c'"
+	@printf "  $(CYAN)%-20s$(RESET) - %s\n" "make main.memcheck" "Run valgrind on 'src/main.c'"
 	@printf "  $(YELLOW)%-20s$(RESET) - %s\n" "make clean" "Remove executables files"
 
 clean:
