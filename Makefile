@@ -48,7 +48,7 @@ help:
 	@printf "  $(YELLOW)%-20s$(RESET) - %s\n" "make clean" "Remove executables files"
 
 clean:
-	@rm -f main test *.mem *.o
+	@rm -f main test data_loader *.mem *.o
 	@echo -e "$(GREEN)Cleaned up executables and object files.$(RESET)"
 
 .PHONY: all test help clean
