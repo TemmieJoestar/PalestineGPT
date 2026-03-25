@@ -70,28 +70,29 @@ Matrix matrix_multiply(Matrix a, Matrix b) {
     return c;
 }
 
-void print_matrix(Matrix m) {
-    for (int i = 0; i < m.rows; i++) {
-        for (int j = 0; j < m.cols; j++) {
-            int index = ((i * m.cols) + j); 
-            printf("%.2f ", m.data[index]);
+void print_matrix(Matrix Input) {
+    int total = Input.rows * Input.cols;
+    
+    for (int i = 0; i < total; i++) {
+        printf("%.2f ", Input.data[i]);
+        if ((i + 1) % Input.cols == 0) {
+            printf("\n");
         }
-        printf("\n");
     }
 }
 
-Matrix matrix_relu(Matrix input) { 
-    int total = input.rows * input.cols;
-    Matrix output = create_matrix(input.rows, input.cols);
+Matrix matrix_relu(Matrix Input) { 
+    int total = Input.rows * Input.cols;
+    Matrix Result = create_matrix(Input.rows, Input.cols);
 
     for (int i = 0; i < total; i++) {
-        if (input.data[i] < 0.0f) {
-            output.data[i] = 0.0f;
+        if (Input.data[i] < 0.0f) {
+            Result.data[i] = 0.0f;
         } else {
-            output.data[i] = input.data[i];
+            Result.data[i] = Input.data[i];
         }
     }
-    return output;
+    return Result;
 }
 
 Matrix matrix_relu_derivative(Matrix Hidden_raw, Matrix Gradient_Hidden){
@@ -114,41 +115,41 @@ Matrix matrix_relu_derivative(Matrix Hidden_raw, Matrix Gradient_Hidden){
 }
 
 
-Matrix matrix_sigmoid(Matrix input){
-    int total = input.rows * input.cols;
-    Matrix output = create_matrix(input.rows,input.cols);
+Matrix matrix_sigmoid(Matrix Input){
+    int total = Input.rows * Input.cols;
+    Matrix Result = create_matrix(Input.rows,Input.cols);
 
     for (int i = 0; i < total; i++){
-        float sigmoid_equation = 1.0f / (1.0f + expf(-input.data[i]));
-        output.data[i] = sigmoid_equation;
+        float sigmoid_equation = 1.0f / (1.0f + expf(-Input.data[i]));
+        Result.data[i] = sigmoid_equation;
     }
-    return output;
+    return Result;
 }
 
-Matrix matrix_softmax(Matrix m) { 
-    float max = m.data[0];
-    int total = m.rows * m.cols;
+Matrix matrix_softmax(Matrix Input) { 
+    float max = Input.data[0];
+    int total = Input.rows * Input.cols;
     
     for (int i = 1; i < total; i++) {
-        if (m.data[i] > max) {
-            max = m.data[i];
+        if (Input.data[i] > max) {
+            max = Input.data[i];
         }
     }
     
-    Matrix c = create_matrix(m.rows, m.cols);
+    Matrix Result = create_matrix(Input.rows, Input.cols);
     float total_sum = 0.0f;
     
     for (int i = 0; i < total; i++) {
-        float e = expf(m.data[i] - max);
-        c.data[i] = e;
+        float e = expf(Input.data[i] - max);
+        Result.data[i] = e;
         total_sum += e;
     }
     
     for (int i = 0; i < total; i++) {
-        c.data[i] = c.data[i] / total_sum;
+        Result.data[i] = Result.data[i] / total_sum;
     }
     
-    return c;
+    return Result;
 }
 
 Matrix matrix_addition(Matrix a, Matrix b) {
@@ -157,16 +158,16 @@ Matrix matrix_addition(Matrix a, Matrix b) {
         exit(1);
     }
     
-    Matrix c = create_matrix(a.rows, a.cols);
+    Matrix Result = create_matrix(a.rows, a.cols);
 
     for (int i = 0; i < a.rows; i++) {
         for (int j = 0; j < a.cols; j++) {
             int index = (i * a.cols) + j;
-            float result = a.data[index] + b.data[index];
-            set_value(c, i, j, result);
+            float output = a.data[index] + b.data[index];
+            set_value(Result, i, j, output);
         }
     }
-    return c;
+    return Result;
 }
 
 Matrix matrix_subtraction(Matrix a, Matrix b) {
