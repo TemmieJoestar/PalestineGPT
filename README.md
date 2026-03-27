@@ -70,22 +70,25 @@ Building a Large Language Model (LLM) with Transformer architecture from scratch
 # Show all available commands
 make help
 
-# Build main program
+# Build the main program
 make
 
-# Run comprehensive test suite
+# Run the comprehensive test suite
 make test
 
-# Run specific file (e.g., gradient_descent.c)
-make gradient_descent.run
+# Run a specific file in src/ (e.g., src/main.c)
+make main.run
 
-# Check for memory leaks
+# Run a bonus file (e.g., src/bonus/iris_dataset.c)
+make iris_dataset.bonus
+
+# Check the test suite for memory leaks
 make memcheck
 
-# Check specific file for memory leaks
-make gradient_descent.memcheck
+# Check a bonus file for memory leaks
+make iris_dataset.bmem
 
-# Clean up compiled files
+# Clean up compiled files and executables
 make clean
 ```
 
