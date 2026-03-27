@@ -207,6 +207,6 @@ MIT License - See [LICENSE](LICENSE) file for details.
 
 ## Author
 
-Built from scratch by [TemmieChan](https://github.com/TemmieChan) as a deep learning journey in C.
+Built from scratch by [TemmieJoestar](https://github.com/TemmieJoestar) as a deep learning journey in C.
 
 **Goal:** Understand every detail of how LLMs work by implementing one from first principles.
