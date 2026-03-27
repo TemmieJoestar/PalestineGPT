@@ -2,3 +2,5 @@ main
 test
 gradient_descent
 main.c
+iris_dataset.c
+xor_problem.c
