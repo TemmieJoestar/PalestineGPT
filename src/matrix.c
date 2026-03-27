@@ -288,3 +288,28 @@ Matrix matrix_normalize(Matrix Dataset) {
     
     return Result;
 }
+
+Matrix get_row(Matrix Input, int row_index) {
+    if (row_index < 0 || row_index >= Input.rows) {
+        printf(RED_TEXT("Error: Row index %d out of bounds\n"), row_index);
+        exit(1);
+    }
+
+    Matrix Output = create_matrix(1, Input.cols);
+
+    for (int i = 0; i < Input.cols; i++) {
+        float val = get_value(Input, row_index, i);
+        set_value(Output, 0, i, val);
+    }
+
+    return Output;
+}
+
+void matrix_swap_rows(Matrix Input, int row1, int row2) {
+    if (row1 == row2) return;
+    for (int col = 0; col < Input.cols; col++) {
+        float temp = get_value(Input, row1, col);
+        set_value(Input, row1, col, get_value(Input, row2, col));
+        set_value(Input, row2, col, temp);
+    }
+}

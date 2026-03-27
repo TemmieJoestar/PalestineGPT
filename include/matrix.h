@@ -78,6 +78,36 @@ void set_value(Matrix m, int r, int c, float v);
  */
 float get_value(Matrix m, int r, int c);
 
+/**
+ * get_row - Extract a specific row from a matrix into a new matrix
+ * @Input: The source matrix to extract from
+ * @row_index: The 0-based index of the row to retrieve
+ * 
+ * Returns: A new Matrix of size (1 x Input.cols) containing a copy of the row data
+ * 
+ * How it works:
+ *   - Allocates a new matrix with 1 row and the same number of columns as the input.
+ *   - Copies the values from the specified row of the Input matrix into the new matrix.
+ * 
+ * Note: 
+ *   - Exits with an error if row_index is out of bounds.
+ *   - Allocates new memory; caller must call free_matrix() on the result.
+ */
+Matrix get_row(Matrix Input, int row_index);
+
+/**
+ * matrix_swap_rows - Swap two rows in a matrix in-place
+ * @M: The matrix to modify
+ * @row1: Index of the first row (0-based)
+ * @row2: Index of the second row (0-based)
+ * 
+ * Note: 
+ *   - Performs the swap in-place; does not allocate new memory.
+ *   - If row1 == row2, the function returns immediately.
+ *   - Exits with an error if indices are out of bounds.
+ */
+void matrix_swap_rows(Matrix M, int row1, int row2);
+
 /* ============================================================================
  * MATRIX ARITHMETIC (TWO MATRICES)
  * ============================================================================ */

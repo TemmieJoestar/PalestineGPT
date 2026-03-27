@@ -35,6 +35,22 @@ Matrix forward_pass(Matrix Weights, Matrix Input);
 Matrix forward_pass_2layer(Matrix Input, Matrix Weights_1, Matrix Weights_2, Matrix Bias_1, Matrix Bias_2, Matrix *Hidden_out, Matrix *Hidden_raw_out );
 
 /**
+ * forward_pass_2layer - Compute a 2-layer Neural Network inference (Multi-class)
+ * @Input: Matrix of input features (1 x N)
+ * @Weights_1: Weights for the hidden layer
+ * @Weights_2: Weights for the output layer
+ * @Bias_1: Bias vector for the hidden layer
+ * @Bias_2: Bias vector for the output layer
+ * @*Hidden_out: OUTPUT - Store the activated Hidden layer (caller must free)
+ * @*Hidden_raw_out: OUTPUT - Store the pre-activation Hidden layer (caller must free)
+ *  Returns: Final output matrix after ReLU (hidden) and Softmax (output)
+ * Note: Uses Softmax to ensure output values represent a probability 
+ * distribution (sum to 1.0). Frees internal intermediate matrices; 
+ * caller must free the returned result and the two output pointers.
+ */
+Matrix forward_pass_2layer_softmax(Matrix Input, Matrix Weights_1, Matrix Weights_2, Matrix Bias_1, Matrix Bias_2, Matrix *Hidden_out, Matrix *Hidden_raw_out
+);
+/**
  * backward_pass - Calculate the gradient of the MSE loss
  * @Prediction: The output from forward_pass
  * @Input: The original input matrix used for the pass
