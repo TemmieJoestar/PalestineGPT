@@ -12,16 +12,14 @@ SRC_DIR = src
 INC_DIR = include
 TEST_DIR = tests
 
-# Find all .c files in src/ except main.c to avoid multiple 'main' definitions
-LIB_SOURCES = $(SRC_DIR)/matrix.c $(SRC_DIR)/gradient_descent.c
-ALL_HEADERS = $(INC_DIR)/matrix.h $(INC_DIR)/gradient_descent.h
+LIB_SOURCES = $(SRC_DIR)/matrix.c $(SRC_DIR)/gradient_descent.c $(SRC_DIR)/data_loader.c
+ALL_HEADERS = $(INC_DIR)/matrix.h $(INC_DIR)/gradient_descent.h $(INC_DIR)/data_loader.h
 
 all: main
 
 main: $(SRC_DIR)/main.c $(LIB_SOURCES) $(ALL_HEADERS)
 	$(CC) $(CFLAGS) $(SRC_DIR)/main.c $(LIB_SOURCES) -o main $(LDFLAGS)
 
-# Updated rule: look in src/ for the .c file
 %.run: $(SRC_DIR)/%.c $(LIB_SOURCES) $(ALL_HEADERS)
 	$(CC) $(CFLAGS) $< $(LIB_SOURCES) -o $* $(LDFLAGS) 
 	./$*
@@ -48,7 +46,7 @@ help:
 	@printf "  $(YELLOW)%-20s$(RESET) - %s\n" "make clean" "Remove executables files"
 
 clean:
-	@rm -f main test data_loader *.mem *.o
+	@rm -f main test *.mem *.o
 	@echo -e "$(GREEN)Cleaned up executables and object files.$(RESET)"
 
 .PHONY: all test help clean
