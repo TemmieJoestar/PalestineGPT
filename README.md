@@ -241,9 +241,3 @@ MIT License - See [LICENSE](LICENSE) file
 **Goal:** Understand every detail of how LLMs work by implementing one from first principles.
 
 Built from scratch by [TemmieJoestar](https://github.com/TemmieJoestar) as a deep learning journey in C.
-
----
-
-## 📝 License
-
-MIT License - See [LICENSE](LICENSE) file
