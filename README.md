@@ -140,17 +140,26 @@ Testing matrix_normalize... PASSED
 
 ## Project Structure
 ```
-PalestineGPT/
-├── .gitignore                  # Git ignore rules
-├── comprehensivetesting.c      # Full test suite (13 tests)
-├── gradient_descent.c          # Neural network training functions
-├── gradient_descent.h          # Training function declarations
-├── LICENSE                     # MIT License
-├── main.c                      # Experiments and demos
-├── Makefile                    # Build automation
-├── matrix.c                    # Matrix library implementation
-├── matrix.h                    # Matrix library header (documented)
-└── README.md                   # This file
+PalestineGPT
+├── include/
+│   ├── data_loader.h
+│   ├── gradient_descent.h
+│   └── matrix.h
+├── others/
+│   └── iris.csv
+├── src/
+│   ├── bonus/
+│   │   ├── iris_dataset.c
+│   │   └── xor_problem.c
+│   ├── data_loader.c
+│   ├── gradient_descent.c
+│   └── matrix.c
+├── tests/
+│   └── comprehensivetesting.c
+├── .gitignore
+├── LICENSE
+├── Makefile
+└── README.md
 ```
 
 ---
