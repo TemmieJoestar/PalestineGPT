@@ -33,29 +33,29 @@ Building a Large Language Model (LLM) with Transformer architecture from scratch
 ## 🏗️ Project Structure
 ```
 PalestineGPT/
-├── include/                    # Header files
+├── include/                   # Header files
 │   ├── data_loader.h          # Dataset loading utilities
 │   ├── gradient_descent.h     # Neural network training
 │   └── matrix.h               # Matrix operations library
 │
-├── src/                        # Source implementations
+├── src/                       # Source implementations
 │   ├── bonus/                 # Example programs
-│   │   ├── iris_dataset.c    # Iris classification demo
-│   │   └── xor_problem.c     # XOR solver demo
-│   ├── data_loader.c         # CSV loading & preprocessing
-│   ├── gradient_descent.c    # Training algorithms
-│   └── matrix.c              # Matrix library
+│   │   ├── iris_dataset.c     # Iris classification demo
+│   │   └── xor_problem.c      # XOR solver demo
+│   ├── data_loader.c          # CSV loading & preprocessing
+│   ├── gradient_descent.c     # Training algorithms
+│   └── matrix.c               # Matrix library
 │
-├── tests/                      # Test suite
+├── tests/                     # Test suite
 │   └── comprehensivetesting.c # 13 tests, 100% passing
 │
-├── others/                     # Data files
-│   └── iris.csv              # Iris flower dataset
+├── others/                    # Data files
+│   └── iris.csv               # Iris flower dataset
 │
 ├── .gitignore
-├── LICENSE                     # MIT License
-├── Makefile                    # Build system
-└── README.md                   # This file
+├── LICENSE                    # MIT License
+├── Makefile                   # Build system
+└── README.md                  # Project documentation
 ```
 
 ---
@@ -241,3 +241,9 @@ MIT License - See [LICENSE](LICENSE) file
 **Goal:** Understand every detail of how LLMs work by implementing one from first principles.
 
 Built from scratch by [TemmieJoestar](https://github.com/TemmieJoestar) as a deep learning journey in C.
+
+---
+
+## 📝 License
+
+MIT License - See [LICENSE](LICENSE) file
