@@ -2,63 +2,107 @@
 
 Building a Large Language Model (LLM) with Transformer architecture from scratch in C.
 
-## Project Status
-
-**Phase 0: C Fundamentals** ✅ COMPLETE
-- Matrix library with 17 operations
-- Zero memory leaks (valgrind verified)
-- Comprehensive test suite (13 tests, all passing)
-
-**Phase 1: Mathematical Foundations** ✅ COMPLETE
-- Linear Algebra ✓
-- Calculus & Gradients ✓
-- Loss Functions ✓
-
-**Phase 2: Neural Network Basics** 🔄 IN PROGRESS
-- 2-layer feedforward network ✓
-- Backpropagation with bias terms ✓
-- Momentum optimization ✓
-- XOR problem solved ✓
-- **Current:** Training on Iris dataset (classification)
+> **Current Status:** Phase 2 Complete - Neural Network Basics ✅
 
 ---
 
-## Current Features
+## 🎯 Project Milestones
 
-### Matrix Operations (17 total)
+- ✅ **Phase 0:** C Fundamentals (Matrix library, memory management)
+- ✅ **Phase 1:** Mathematical Foundations (Linear algebra, calculus, gradients)
+- ✅ **Phase 2:** Neural Network Basics (2-layer networks, backpropagation, real datasets)
+- ⏳ **Phase 3:** NLP Basics (Tokenization, embeddings, text processing)
+- ⏳ **Phase 4:** Attention Mechanism
+- ⏳ **Phase 5:** Transformer Architecture
+- ⏳ **Phase 6:** Training Infrastructure
+- ⏳ **Phase 7:** Text Generation
+
+---
+
+## 📊 Current Capabilities
+
+### Successfully Trained On:
+- **XOR Problem:** 100% accuracy (classic non-linear classification)
+- **Iris Dataset:** 96-100% accuracy (multi-class flower classification)
+  - 150 samples, 4 features, 3 classes
+  - Proper train/validation split (80/20)
+  - Data shuffling implemented
+
+---
+
+## 🏗️ Project Structure
+```
+PalestineGPT/
+├── include/                   # Header files
+│   ├── data_loader.h          # Dataset loading utilities
+│   ├── gradient_descent.h     # Neural network training
+│   └── matrix.h               # Matrix operations library
+│
+├── src/                       # Source implementations
+│   ├── bonus/                 # Example programs
+│   │   ├── iris_dataset.c     # Iris classification demo
+│   │   └── xor_problem.c      # XOR solver demo
+│   ├── data_loader.c          # CSV loading & preprocessing
+│   ├── gradient_descent.c     # Training algorithms
+│   └── matrix.c               # Matrix library
+│
+├── tests/                     # Test suite
+│   └── comprehensivetesting.c # 13 tests, 100% passing
+│
+├── others/                    # Data files
+│   └── iris.csv               # Iris flower dataset
+│
+├── .gitignore
+├── LICENSE                    # MIT License
+├── Makefile                   # Build system
+└── README.md                  # Project documentation
+```
+
+---
+
+## ⚡ Features
+
+### Matrix Operations (20+ functions)
 **Core Operations:**
-- Matrix multiplication (linear algebra)
-- Element-wise operations (add, subtract, Hadamard product)
+- Matrix multiplication, addition, subtraction
+- Hadamard product (element-wise multiplication)
 - Matrix transpose
 - Deep copy
 
 **Scalar Operations:**
-- Scalar multiplication
-- Scalar addition
-- Scalar subtraction
+- Scalar multiplication, addition, subtraction
+
+**Data Utilities:**
+- Row extraction (`get_row`)
+- Row swapping (`matrix_swap_rows`)
+- Dataset shuffling (Fisher-Yates algorithm)
 
 **Data Preprocessing:**
-- Feature normalization (min-max scaling to [0,1])
-
-### Activation Functions
-- ReLU (Rectified Linear Unit)
-- Sigmoid (for binary classification)
-- Softmax (for multi-class classification)
+- Min-max normalization `[0, 1]`
 
 ### Neural Network Components
+**Activations:**
+- ReLU (hidden layers)
+- Sigmoid (binary classification)
+- Softmax (multi-class classification)
+
+**Training:**
 - Forward propagation (2-layer with bias)
-- Backpropagation (with ReLU derivative masking)
-- Gradient descent optimizer
+- Backpropagation (universal matrix-based)
 - Momentum-based gradient descent
-- Loss functions:
-  - Mean Squared Error (MSE)
-  - Cross-Entropy Loss
+- Loss functions: MSE, Cross-Entropy
+
+**Data Handling:**
+- CSV loading
+- One-hot encoding
+- Train/validation splitting
+- Dataset shuffling
 
 ---
 
-## Building
+## 🚀 Building & Running
 
-**Requirements:**
+### Requirements
 - GCC compiler
 - Make (Unix-style)
   - **Windows:** Use [Git Bash](https://git-scm.com/downloads) or WSL
@@ -92,133 +136,108 @@ make iris_dataset.bmem
 make clean
 ```
 
----
+### Example Output
 
-## Testing
+**Iris Classification:**
+```
+Epoch 0: Accuracy = 33.33%
+Epoch 100: Accuracy = 66.67%
+Epoch 200: Accuracy = 90.00%
+Epoch 500: Accuracy = 96.67%
+Epoch 1000: Accuracy = 100.00%
 
-**Test Coverage:**
-- 13 comprehensive tests
-- All matrix operations verified
-- Activation functions tested
-- Normalization edge cases covered
-- **Result:** 100% passing, zero memory leaks ✅
-
-**Run tests:**
-```bash
-make test
+Final Validation Accuracy: 96.67%
 ```
 
-**Sample output:**
+**XOR Problem:**
 ```
-=== Matrix Library Tests ===
+Epoch 0: Average Loss = 0.2500
+Epoch 10000: Average Loss = 0.0012
+Epoch 20000: Average Loss = 0.0001
 
---- Core Matrix Arithmetic ---
-Testing matrix_multiply... PASSED
-Testing matrix_addition... PASSED
-Testing matrix_subtraction... PASSED
-Testing matrix_hadamard... PASSED
-
---- Transformations & Scalars ---
-Testing matrix_transpose... PASSED
-Testing matrix_scalar_multiply... PASSED
-Testing matrix_scalar_addition... PASSED
-Testing matrix_scalar_subtraction... PASSED
-Testing matrix_copy... PASSED
-
---- Neural Network Activations ---
-Testing matrix_relu... PASSED
-Testing matrix_sigmoid... PASSED
-Testing matrix_softmax... PASSED
-
---- Data Preprocessing ---
-Testing matrix_normalize... PASSED
-
-=== All Tests Passed! ===
+Final XOR Results:
+(0,0) -> 0.0023 (Target: 0.0) ✓
+(0,1) -> 0.9981 (Target: 1.0) ✓
+(1,0) -> 0.9977 (Target: 1.0) ✓
+(1,1) -> 0.0019 (Target: 0.0) ✓
 ```
 
 ---
 
-## Project Structure
-```
-PalestineGPT
-├── include/
-│   ├── data_loader.h
-│   ├── gradient_descent.h
-│   └── matrix.h
-├── others/
-│   └── iris.csv
-├── src/
-│   ├── bonus/
-│   │   ├── iris_dataset.c
-│   │   └── xor_problem.c
-│   ├── data_loader.c
-│   ├── gradient_descent.c
-│   └── matrix.c
-├── tests/
-│   └── comprehensivetesting.c
-├── .gitignore
-├── LICENSE
-├── Makefile
-└── README.md
-```
+## 🧪 Testing
+
+**Test Suite:** 13 comprehensive tests covering:
+- Core matrix arithmetic
+- Transformations & scalar operations
+- Neural network activations
+- Data preprocessing
 
 ---
 
-## Milestones Achieved
+## 📚 Technical Achievements
 
-- ✅ **Matrix library:** 17 operations, fully tested
-- ✅ **XOR problem solved:** 2-layer network with 100% accuracy
-- ✅ **Momentum optimization:** Consistent, stable training
-- 🔄 **Iris classification:** In progress (Phase 2 final task)
+### Phase 2 Highlights:
+- ✅ **Multi-class classification** (Softmax + Cross-Entropy)
+- ✅ **Data preprocessing** (Normalization, one-hot encoding)
+- ✅ **Dataset shuffling** (Fisher-Yates algorithm)
+- ✅ **Universal backpropagation** (Matrix-based gradients)
+- ✅ **Momentum optimization** (Faster, more stable training)
+- ✅ **Train/validation splitting** (Proper generalization testing)
 
----
-
-## What's Next
-
-**Phase 2 Completion:**
-- Train on Iris flower dataset (multi-class classification)
-- Implement validation split
-- Compute classification accuracy
-
-**Phase 3: NLP Basics** (Coming Soon)
-- Tokenization
-- Vocabulary building
-- Word embeddings
-- Text preprocessing
+### Key Algorithms Implemented:
+- Backpropagation through ReLU activations
+- Softmax gradient computation
+- Momentum-based gradient descent
+- Fisher-Yates shuffle
+- Min-max feature scaling
 
 ---
 
-## Learning Resources
+## 📖 Learning Journey
 
-This project follows the **7-phase roadmap** for building LLMs from scratch:
-1. ✅ C Fundamentals
-2. ✅ Mathematical Foundations  
-3. 🔄 Neural Network Basics (95% complete)
-4. ⏳ NLP Basics
-5. ⏳ Attention Mechanism
-6. ⏳ Transformer Architecture
-7. ⏳ Training Infrastructure
-8. ⏳ Text Generation
+**Completed:**
+- Phase 0: C programming fundamentals
+- Phase 1: Linear algebra, calculus, gradient descent
+- Phase 2: Neural networks, real dataset training
 
----
+**What's Next:**
+- Phase 3: Text processing, tokenization, embeddings
+- Phase 4: Attention mechanism (core of Transformers)
+- Phase 5: Full Transformer architecture
+- Phase 6: Training infrastructure at scale
+- Phase 7: Text generation capabilities
 
-## Requirements
-
-- **Compiler:** GCC with C99 support
-- **Platform:** Linux, macOS, or Windows (with Git Bash/WSL)
-- **Memory:** 2GB RAM minimum (for training)
-- **Math library:** `-lm` flag (standard)
+**Timeline:** ~6-9 months total (3 months complete)
 
 ---
 
-## License
+## 🎯 Project Goals
 
-MIT License - See [LICENSE](LICENSE) file for details.
+1. **Deep Understanding:** Learn how LLMs work at the lowest level
+2. **From Scratch:** No ML frameworks - pure C implementation
+3. **Production Quality:** Professional code, documentation, testing
+4. **Scalable Architecture:** Build foundations that scale to real models
 
 ---
 
-## Author
+## 🌟 Acknowledgments
 
-Built from scratch by [TemmieJoestar](https://github.com/TemmieJoestar) as a deep learning journey in C.
+- Fisher-Yates shuffle algorithm
+- Iris flower dataset (UCI Machine Learning Repository)
+- Momentum optimization (Polyak, 1964)
+
+---
+
+## 📝 License
+
+MIT License - See [LICENSE](LICENSE) file
+
+---
+
+## 👤 Author
+
+**Repository:** [PalestineGPT on GitHub](https://github.com/TemmieJoestar/PalestineGPT)
 
 **Goal:** Understand every detail of how LLMs work by implementing one from first principles.
+
+Built from scratch by [TemmieJoestar](https://github.com/TemmieJoestar) as a deep learning journey in C.
