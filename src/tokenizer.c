@@ -14,16 +14,6 @@ const char* VOCAB = "#"
                     "0123456789"
                     " .,!?;:'-\n";
 
-// test_memory.c
-int main() {
-    int len;
-    int* tokens = encode("AI-42: Hello, 2024!", &len);
-    char* decoded = decode(tokens, len);
-    printf("%s\n", decoded);  // Should match exactly
-
-    free(tokens);
-    free(decoded);
-}
 
 int* encode(const char* text, int* output_length) {
     int len = strlen(text);
