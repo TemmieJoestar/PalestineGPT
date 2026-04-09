@@ -2,7 +2,13 @@
 #ifndef GRADIENT_DESCENT_H
 #define GRADIENT_DESCENT_H
 
-#include "matrix.h"
+// Text formatting macros
+#define RED_TEXT(x) "\033[31;1m" x "\033[0m"
+#define GREEN_TEXT(x) "\033[92;1m" x "\033[0m"
+#define YELLOW_TEXT(x) "\033[33;1m" x "\033[0m"
+#define CYAN_TEXT(x) "\033[36;1m" x "\033[0m"
+#define MAGENTA_TEXT(x) "\033[35;1m" x "\033[0m"
+#define BOLD(x) "\033[1m" x "\033[0m"
 
 /* ============================================================================
  * NEURAL NETWORK OPERATIONS (TRAINING & INFERENCE)
