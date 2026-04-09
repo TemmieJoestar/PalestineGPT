@@ -1,7 +1,5 @@
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
-#include <assert.h>
 #include "vocabulary.h"
 
 Vocabulary* create_vocab(const char** token_list, int size) {
@@ -66,7 +64,6 @@ char* get_token_string(Vocabulary* vocab, int token_id) {
 }
 
 void free_vocab(Vocabulary* vocab){
-    // Check if vocab is NULL
     if (vocab == NULL) {
         return;
     }

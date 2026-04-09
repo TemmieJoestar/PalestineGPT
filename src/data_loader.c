@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
 #include "matrix.h"
 
 Matrix load_iris_features(const char* filename) {

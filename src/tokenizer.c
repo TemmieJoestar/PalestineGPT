@@ -1,12 +1,7 @@
-#include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "matrix.h"
 #include "tokenizer.h"
-
-
-
 
 const char* VOCAB = "#"
                     "abcdefghijklmnopqrstuvwxyz"
