@@ -116,25 +116,6 @@ make clean
 
 ---
 
-## Technical Achievements
-
-### Phase 2 Highlights:
-- ✅ **Multi-class classification** (Softmax + Cross-Entropy)
-- ✅ **Data preprocessing** (Normalization, one-hot encoding)
-- ✅ **Dataset shuffling** (Fisher-Yates algorithm)
-- ✅ **Universal backpropagation** (Matrix-based gradients)
-- ✅ **Momentum optimization** (Faster, more stable training)
-- ✅ **Train/validation splitting** (Proper generalization testing)
-
-### Key Algorithms Implemented:
-- Backpropagation through ReLU activations
-- Softmax gradient computation
-- Momentum-based gradient descent
-- Fisher-Yates shuffle
-- Min-max feature scaling
-
----
-
 ## Learning Journey
 
 **Completed:**
@@ -157,8 +138,7 @@ make clean
 
 1. **Deep Understanding:** Learn how LLMs work at the lowest level
 2. **From Scratch:** No ML frameworks - pure C implementation
-3. **Production Quality:** Professional code, documentation, testing
-4. **Scalable Architecture:** Build foundations that scale to real models
+3. **Scalable Architecture:** Build foundations that scale to real models
 
 ---
 
