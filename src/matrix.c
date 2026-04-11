@@ -45,7 +45,9 @@ float get_value(Matrix m, int r, int c) {
 }
 
 void free_matrix(Matrix m) { 
-    free(m.data);
+    if (m.data != NULL) {
+            free(m.data);
+        }
 }
 
 Matrix matrix_multiply(Matrix a, Matrix b) {  
