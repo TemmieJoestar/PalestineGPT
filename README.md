@@ -2,11 +2,11 @@
 
 Building a Large Language Model (LLM) with Transformer architecture from scratch in C.
 
-> **Current Status:** Phase 2 Complete - Neural Network Basics ✅
+> **Current Status:** Phase 3 - Working...
 
 ---
 
-## 🎯 Project Milestones
+## Project Milestones
 
 - ✅ **Phase 0:** C Fundamentals (Matrix library, memory management)
 - ✅ **Phase 1:** Mathematical Foundations (Linear algebra, calculus, gradients)
@@ -19,7 +19,7 @@ Building a Large Language Model (LLM) with Transformer architecture from scratch
 
 ---
 
-## 📊 Current Capabilities
+## Current Capabilities
 
 ### Successfully Trained On:
 - **XOR Problem:** 100% accuracy (classic non-linear classification)
@@ -30,27 +30,35 @@ Building a Large Language Model (LLM) with Transformer architecture from scratch
 
 ---
 
-## 🏗️ Project Structure
+## Project Structure
 ```
 PalestineGPT/
 ├── include/                   # Header files
 │   ├── data_loader.h          # Dataset loading utilities
+│   ├── embedding.h            # Embeddings function library
 │   ├── gradient_descent.h     # Neural network training
-│   └── matrix.h               # Matrix operations library
+│   ├── matrix.h               # Matrix operations library
+│   ├── tokenizer.h            # Tokenizer functions library
+│   └── vocabulary.h           # Vocabulary functions library
+│
+├── others/                    # Data files
+│   └── iris.csv               # Iris flower dataset
 │
 ├── src/                       # Source implementations
 │   ├── bonus/                 # Example programs
 │   │   ├── iris_dataset.c     # Iris classification demo
 │   │   └── xor_problem.c      # XOR solver demo
 │   ├── data_loader.c          # CSV loading & preprocessing
+│   ├── embedding.c            # Embedding Library
 │   ├── gradient_descent.c     # Training algorithms
-│   └── matrix.c               # Matrix library
+│   ├── matrix.c               # Matrix library
+│   ├── tokenizer.c            # Tokenizer library
+│   └── vocabulary             # Vocabulary library
 │
 ├── tests/                     # Test suite
-│   └── comprehensivetesting.c # 13 tests, 100% passing
-│
-├── others/                    # Data files
-│   └── iris.csv               # Iris flower dataset
+│   ├── comprehensivetesting.c # 13 tests
+│   ├── test_embedding.c       # 4 tests
+│   └── test_vocab.c           # 4 tests
 │
 ├── .gitignore
 ├── LICENSE                    # MIT License
@@ -60,47 +68,7 @@ PalestineGPT/
 
 ---
 
-## ⚡ Features
-
-### Matrix Operations (20+ functions)
-**Core Operations:**
-- Matrix multiplication, addition, subtraction
-- Hadamard product (element-wise multiplication)
-- Matrix transpose
-- Deep copy
-
-**Scalar Operations:**
-- Scalar multiplication, addition, subtraction
-
-**Data Utilities:**
-- Row extraction (`get_row`)
-- Row swapping (`matrix_swap_rows`)
-- Dataset shuffling (Fisher-Yates algorithm)
-
-**Data Preprocessing:**
-- Min-max normalization `[0, 1]`
-
-### Neural Network Components
-**Activations:**
-- ReLU (hidden layers)
-- Sigmoid (binary classification)
-- Softmax (multi-class classification)
-
-**Training:**
-- Forward propagation (2-layer with bias)
-- Backpropagation (universal matrix-based)
-- Momentum-based gradient descent
-- Loss functions: MSE, Cross-Entropy
-
-**Data Handling:**
-- CSV loading
-- One-hot encoding
-- Train/validation splitting
-- Dataset shuffling
-
----
-
-## 🚀 Building & Running
+## Building & Running
 
 ### Requirements
 - GCC compiler
@@ -136,35 +104,9 @@ make iris_dataset.bmem
 make clean
 ```
 
-### Example Output
-
-**Iris Classification:**
-```
-Epoch 0: Accuracy = 33.33%
-Epoch 100: Accuracy = 66.67%
-Epoch 200: Accuracy = 90.00%
-Epoch 500: Accuracy = 96.67%
-Epoch 1000: Accuracy = 100.00%
-
-Final Validation Accuracy: 96.67%
-```
-
-**XOR Problem:**
-```
-Epoch 0: Average Loss = 0.2500
-Epoch 10000: Average Loss = 0.0012
-Epoch 20000: Average Loss = 0.0001
-
-Final XOR Results:
-(0,0) -> 0.0023 (Target: 0.0) ✓
-(0,1) -> 0.9981 (Target: 1.0) ✓
-(1,0) -> 0.9977 (Target: 1.0) ✓
-(1,1) -> 0.0019 (Target: 0.0) ✓
-```
-
 ---
 
-## 🧪 Testing
+## Testing
 
 **Test Suite:** 13 comprehensive tests covering:
 - Core matrix arithmetic
@@ -174,7 +116,7 @@ Final XOR Results:
 
 ---
 
-## 📚 Technical Achievements
+## Technical Achievements
 
 ### Phase 2 Highlights:
 - ✅ **Multi-class classification** (Softmax + Cross-Entropy)
@@ -193,7 +135,7 @@ Final XOR Results:
 
 ---
 
-## 📖 Learning Journey
+## Learning Journey
 
 **Completed:**
 - Phase 0: C programming fundamentals
@@ -211,7 +153,7 @@ Final XOR Results:
 
 ---
 
-## 🎯 Project Goals
+## Project Goals
 
 1. **Deep Understanding:** Learn how LLMs work at the lowest level
 2. **From Scratch:** No ML frameworks - pure C implementation
@@ -220,21 +162,13 @@ Final XOR Results:
 
 ---
 
-## 🌟 Acknowledgments
-
-- Fisher-Yates shuffle algorithm
-- Iris flower dataset (UCI Machine Learning Repository)
-- Momentum optimization (Polyak, 1964)
-
----
-
-## 📝 License
+## License
 
 MIT License - See [LICENSE](LICENSE) file
 
 ---
 
-## 👤 Author
+## Author
 
 **Repository:** [PalestineGPT on GitHub](https://github.com/TemmieJoestar/PalestineGPT)
 
