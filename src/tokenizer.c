@@ -3,6 +3,7 @@
 #include <string.h>
 #include "tokenizer.h"
 
+
 const char* VOCAB = "#"
                     "abcdefghijklmnopqrstuvwxyz"
                     "ABCDEFGHIJKLMNOPQRSTUVWXYZ"

@@ -5,7 +5,6 @@
 
 /*
 Comprehensive Vocabulary Testing File
-Matches the style of comprehensive_testing.c
 */
 
 // Testing Macros
