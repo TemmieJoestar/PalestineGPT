@@ -44,31 +44,37 @@ int main() {
 
 // Test 1: Full Pipeline
 void test_full_pipeline() {
-    printf(BOLD("Testing full_pipeline... "));
+    printf("Test 1: Full tokenization pipeline\n");
     
-    const char* tokens[] = {"#", "a", "b", "c", "hello"};
-    Vocabulary* vocab = create_vocab(tokens, 5);
-    EmbeddingLayer* embed_layer = create_embedding_layer(5, 8);
+    // Original text
+    const char* text = "hello world";
     
+    // 1. Encode to tokens
     int len;
-    int* token_ids = encode("abc", &len);
+    int* tokens = encode(text, &len);
     
-    Matrix embedded = embed_sequence(embed_layer, token_ids, len);
+    // 2. Decode back
+    char* decoded = decode(tokens, len);
     
-    EXPECT_EQ_INT(embedded.rows, 3);
-    EXPECT_EQ_INT(embedded.cols, 8);
+    // Should match
+    assert(strcmp(text, decoded) == 0);
     
-    char* decoded = decode(token_ids, len);
-    if (strcmp(decoded, "abc") != 0) {
-        printf(RED_TEXT("\nFAILED: String mismatch\n"));
-        exit(1);
-    }
+    // 3. Embed the tokens
+    EmbeddingLayer* layer = create_embedding_layer(70, 128);
+    Matrix embedded = embed_sequence(layer, tokens, len);
     
-    free(token_ids);
+    // Verify dimensions
+    assert(embedded.rows == len);
+    assert(embedded.cols == 128);
+    
+    printf("Text: '%s'\n", text);
+    printf("Tokens: %d\n", len);
+    printf("Embedded: %dx%d matrix\n", embedded.rows, embedded.cols);
+    
+    free(tokens);
     free(decoded);
     free_matrix(embedded);
-    free_embedding_layer(embed_layer);
-    free_vocab(vocab);
+    free_embedding_layer(layer);
     
-    printf(GREEN_TEXT("PASSED\n"));
+    printf("✓ Passed\n\n");
 }

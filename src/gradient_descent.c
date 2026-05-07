@@ -54,7 +54,8 @@ void backward_pass_2layer(Matrix Output, Matrix Hidden, Matrix Hidden_raw, Matri
 }
 float mean_squared_error(Matrix Prediction, Matrix Target) {
     if (Prediction.rows != Target.rows || Prediction.cols != Target.cols) {
-        fprintf(stderr,RED_TEXT("Error: Matrices must be the same size to Mean Squared Error (M.E.S) !\n"));
+        fprintf(stderr,RED_TEXT("ERROR: Matrices must be the same size to Mean Squared Error (M.E.S) !\n"));
+        fprintf(stderr, YELLOW_TEXT("WARNING: Exiting..."));
         exit(1);
     }
 
@@ -71,7 +72,8 @@ float mean_squared_error(Matrix Prediction, Matrix Target) {
 
 float cross_entropy_loss(Matrix Prediction, Matrix Target){
     if (Prediction.rows != Target.rows || Prediction.cols != Target.cols) {
-        fprintf(stderr,RED_TEXT("Error: Matrices must be the same size for Cross Entropy Loss !\n"));
+        fprintf(stderr,RED_TEXT("ERROR: Matrices must be the same size for Cross Entropy Loss !\n"));
+        fprintf(stderr, YELLOW_TEXT("WARNING: Exiting..."));
         exit(1);
     }
     int total = Prediction.rows * Prediction.cols;
@@ -149,8 +151,6 @@ Matrix forward_pass_2layer_softmax(Matrix Input, Matrix Weights_1, Matrix Weight
 
 
 void train(Matrix Input, Matrix Weights, Matrix Target, int steps, float learning_rate) {
-    
-    
     Matrix current = matrix_copy(Weights);
     
     for (int i = 0; i < steps; i++) {

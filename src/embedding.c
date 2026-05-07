@@ -23,7 +23,8 @@ EmbeddingLayer* create_embedding_layer(int vocab_size, int embedding_dim){
 Matrix get_embedding(EmbeddingLayer* layer, int token_id) {
     // Bounds check
     if (token_id < 0 || token_id >= layer->vocab_size) {
-        fprintf(stderr, RED_TEXT("Error: Token_id out of bounds!\n"));
+        fprintf(stderr, RED_TEXT("ERROR: Token_id out of bounds!\n"));
+        fprintf(stderr, YELLOW_TEXT("WARNING: Returned error_matrix"));
         Matrix error_matrix = {0}; 
         return error_matrix;
     }
@@ -37,11 +38,11 @@ Matrix embed_sequence(EmbeddingLayer* layer, int* token_ids, int length) {
         Matrix Vector = get_embedding(layer, token_ids[i]);
 
         if (Vector.data == NULL) {
-            fprintf(stderr, RED_TEXT("Error: Token ID %d out of bounds at sequence index %d. Skipping.\n"), token_ids[i], i);
-            //free_matrix(Seq_Matrix);
-            //Matrix error_matrix = {0}; 
-            //return error_matrix;
-            continue;
+            fprintf(stderr, RED_TEXT("ERROR: Token ID %d out of bounds at sequence index %d. Skipping.\n"), token_ids[i], i);
+            fprintf(stderr, YELLOW_TEXT("WARNING: Returned error_matrix"));
+            free_matrix(Seq_Matrix);
+            Matrix error_matrix = {0}; 
+            return error_matrix;
         }
         memcpy(Seq_Matrix.data + (i * Seq_Matrix.cols), Vector.data, Vector.cols * sizeof(float));
         free_matrix(Vector);

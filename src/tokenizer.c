@@ -38,7 +38,7 @@ int* encode(const char* text, int* output_length) {
             // Log a limited number of errors to prevent console pollution during large-scale processing
             static int error_count = 0;
             if (error_count < 10) {
-                printf(RED_TEXT("Character '%c' not found, replaced by '#' (0)\n"), text[i]);
+                fprintf(stderr, ("Character '%c' not found, replaced by '#' (0)\n"), text[i]);
                 error_count++;
             }
         }

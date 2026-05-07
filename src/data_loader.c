@@ -8,7 +8,8 @@ Matrix load_iris_features(const char* filename) {
     char buffer[1024];
     
     if (!fp) {
-        printf(RED_TEXT("Error: Could not open file %s\n"), filename);
+        fprintf(stderr, RED_TEXT("Error: Could not open file %s\n"), filename);
+        fprintf(stderr, YELLOW_TEXT("WARNING: Exiting..."));
         exit(1); 
     }
 
@@ -40,7 +41,8 @@ Matrix load_iris_labels(const char* filename) {
     char buffer[1024];
     
     if (!fp) {
-        printf(RED_TEXT("Error: Could not open file %s\n"), filename);
+        fprintf(stderr, ("Error: Could not open file %s\n"), filename);
+        fprintf(stderr, YELLOW_TEXT("WARNING: Exiting..."));
         exit(1); 
     }
 
@@ -78,7 +80,7 @@ Matrix label_to_onehot(int label, int num_classes) {
     if (label >= 0 && label < num_classes) {
         set_value(row_vector, 0, label, 1.0f);
     } else {
-        printf(RED_TEXT("Warning: Label %d out of range for %d classes\n"), label, num_classes);
+        fprintf(stderr, ("ERROR: Label %d out of range for %d classes\n"), label, num_classes);
     }
 
     return row_vector;
