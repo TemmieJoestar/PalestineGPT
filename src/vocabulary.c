@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "vocabulary.h"
+#include "error.h"
 
 Vocabulary* create_vocab(const char** token_list, int size) {
     Vocabulary* vocab = malloc(sizeof(Vocabulary));

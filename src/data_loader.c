@@ -2,15 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include "matrix.h"
+#include "error.h"
 
 Matrix load_iris_features(const char* filename) {
     FILE *fp = fopen(filename, "r");
     char buffer[1024];
     
     if (!fp) {
-        fprintf(stderr, RED_TEXT("Error: Could not open file %s\n"), filename);
-        fprintf(stderr, YELLOW_TEXT("WARNING: Exiting..."));
-        exit(1); 
+        FATAL_ERROR("Could not open file %s.",filename);
     }
 
     // Standard Iris dataset size is 150 samples with 4 features each
@@ -41,9 +40,7 @@ Matrix load_iris_labels(const char* filename) {
     char buffer[1024];
     
     if (!fp) {
-        fprintf(stderr, ("Error: Could not open file %s\n"), filename);
-        fprintf(stderr, YELLOW_TEXT("WARNING: Exiting..."));
-        exit(1); 
+        FATAL_ERROR("Could not open file %s.",filename); 
     }
 
     Matrix Output = create_matrix(150, 1); 
@@ -80,7 +77,7 @@ Matrix label_to_onehot(int label, int num_classes) {
     if (label >= 0 && label < num_classes) {
         set_value(row_vector, 0, label, 1.0f);
     } else {
-        fprintf(stderr, ("ERROR: Label %d out of range for %d classes\n"), label, num_classes);
+        ERROR("Label %d out of range for %d classes", label, num_classes);
     }
 
     return row_vector;

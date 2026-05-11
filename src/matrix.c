@@ -2,13 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "matrix.h"
-
-/*
-Matrix Function File
-
-Will be used for :
-        >Every Matrix Function, and Matrix Related Function
-*/
+#include "error.h"
 
 Matrix create_matrix(int rows, int cols) {
     Matrix m;
@@ -21,22 +15,15 @@ Matrix create_matrix(int rows, int cols) {
 
 void set_value(Matrix m, int r, int c, float value) {
     if (r < 0 || r >= m.rows || c < 0 || c >= m.cols) {
-        fprintf(stderr, RED_TEXT("ERROR: Index out of bounds!\n"));
-        fprintf(stderr, "Tried to access (%d, %d) in a %dx%d matrix\n", r, c, m.rows, m.cols);
-        fprintf(stderr, YELLOW_TEXT("WARNING: Exiting..."));
-        exit(1);
+        FATAL_ERROR("Index out of bounds. Tried accessing (%d, %d) in a %dx%d matrix. Exiting...", r, c, m.rows, m.cols);
     }
-    
     int index = (r * m.cols) + c;
     m.data[index] = value;
 }
 
 float get_value(Matrix m, int r, int c) {
     if (r < 0 || r >= m.rows || c < 0 || c >= m.cols) {
-        fprintf(stderr, RED_TEXT("ERROR: Index out of bounds\n"));
-        fprintf(stderr, BOLD("Tried to access (%d, %d) in a %dx%d matrix\n"),r, c, m.rows, m.cols);
-        fprintf(stderr, YELLOW_TEXT("WARNING: Exiting..."));
-        exit(1);
+        FATAL_ERROR("Index out of bounds. Tried to access (%d, %d) in a %dx%d matrix. Exiting...",r, c, m.rows, m.cols);
     }
     
     int index = (r * m.cols) + c;
@@ -51,9 +38,7 @@ void free_matrix(Matrix m) {
 
 Matrix matrix_multiply(Matrix a, Matrix b) {  
     if (a.cols != b.rows) {  
-        fprintf(stderr, RED_TEXT("ERROR: Inner dimensions must match (A.cols == B.rows)!\n"));
-        fprintf(stderr, YELLOW_TEXT("WARNING: Exiting..."));
-        exit(1);
+        FATAL_ERROR("Inner dimensions must match (A.cols == B.rows). Exiting...");
     }
     
     Matrix c = create_matrix(a.rows, b.cols);
@@ -99,9 +84,7 @@ Matrix matrix_relu(Matrix Input) {
 
 Matrix matrix_relu_derivative(Matrix Hidden_raw, Matrix Gradient_Hidden){
     if (Hidden_raw.rows != Gradient_Hidden.rows || Hidden_raw.cols != Gradient_Hidden.cols) {
-        fprintf(stderr, RED_TEXT("ERROR: Matrices must be the same size!\n"));
-        fprintf(stderr, YELLOW_TEXT("WARNING: Exiting..."));
-        exit(1);
+        FATAL_ERROR("Matrices must be the same size. Exiting...");
     }
 
     int total = Hidden_raw.rows * Hidden_raw.cols;
@@ -157,9 +140,7 @@ Matrix matrix_softmax(Matrix Input) {
 
 Matrix matrix_addition(Matrix a, Matrix b) {
     if (a.rows != b.rows || a.cols != b.cols) {
-        fprintf(stderr, RED_TEXT("ERROR: Matrices must be the same size for addition!\n"));
-        fprintf(stderr, YELLOW_TEXT("WARNING: Exiting..."));
-        exit(1);
+        FATAL_ERROR("Matrices must be the same size for addition. Exiting...");
     }
     
     Matrix Result = create_matrix(a.rows, a.cols);
@@ -176,9 +157,7 @@ Matrix matrix_addition(Matrix a, Matrix b) {
 
 Matrix matrix_subtraction(Matrix a, Matrix b) {
     if (a.rows != b.rows || a.cols != b.cols) {
-        fprintf(stderr, RED_TEXT("ERROR: Matrices must be the same size for subtraction!\n"));
-        fprintf(stderr, YELLOW_TEXT("WARNING: Exiting..."));
-        exit(1);
+        FATAL_ERROR("Matrices must be the same size for subtraction. Exiting...");
     }
 
     Matrix c = create_matrix(a.rows, a.cols);
@@ -239,9 +218,7 @@ Matrix matrix_scalar_addition(Matrix Input, float scalar){
 
 Matrix matrix_hadamard(Matrix a, Matrix b) { 
     if (a.rows != b.rows || a.cols != b.cols) {
-        fprintf(stderr, RED_TEXT("ERROR: Matrices must be the same size for element-wise multiplication!\n"));
-        fprintf(stderr, YELLOW_TEXT("WARNING: Exiting..."));
-        exit(1);
+        FATAL_ERROR("Matrices must be the same size for element-wise multiplication. Exiting...");
     }
     
     Matrix c = create_matrix(a.rows, a.cols);
@@ -283,7 +260,7 @@ Matrix matrix_normalize(Matrix Dataset) {
     float range = max - min;
 
     if (range == 0.0f) {
-        fprintf(stderr, YELLOW_TEXT("WARNING: Range is 0! Returning a copy of Dataset\n"));
+        ERROR("Range is 0! Returning a copy of Dataset");
         return matrix_copy(Dataset);
     }
 
@@ -297,9 +274,7 @@ Matrix matrix_normalize(Matrix Dataset) {
 
 Matrix get_row(Matrix Input, int row_index) {
     if (row_index < 0 || row_index >= Input.rows) {
-        fprintf(stderr, ("ERROR: Row index %d out of bounds\n"), row_index);
-        fprintf(stderr, YELLOW_TEXT("WARNING: Exiting..."));
-        exit(1);
+        FATAL_ERROR("Row index %d out of bounds", row_index);
     }
 
     Matrix Output = create_matrix(1, Input.cols);

@@ -4,6 +4,7 @@
 #include <time.h>
 #include "matrix.h"
 #include "ngram.h"
+#include "error.h"
 
 BigramModel* train_bigram_model(const char* text) {
     BigramModel* Model = calloc(1, sizeof(BigramModel));
@@ -13,8 +14,7 @@ BigramModel* train_bigram_model(const char* text) {
 
     // Error handling
     if (Model == NULL){
-        fprintf(stderr,("ERROR: Model is NULL."));
-        fprintf(stderr, YELLOW_TEXT("WARNING: Exiting..."));
+        ERROR("Model is NULL. Exiting...");
         free(copy);
         exit(1);
     }

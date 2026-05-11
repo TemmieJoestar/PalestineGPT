@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "tokenizer.h"
-
+#include "error.h"
 
 const char* VOCAB = "#"
                     "abcdefghijklmnopqrstuvwxyz"
@@ -38,7 +38,7 @@ int* encode(const char* text, int* output_length) {
             // Log a limited number of errors to prevent console pollution during large-scale processing
             static int error_count = 0;
             if (error_count < 10) {
-                fprintf(stderr, ("Character '%c' not found, replaced by '#' (0)\n"), text[i]);
+                WARNING("Character '%c' not found, replaced by '#' (0)", text[i]);
                 error_count++;
             }
         }

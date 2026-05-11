@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "matrix.h"
+#include "error.h"
 
 #define EPSILON 1e-7f // Value close to 0 
 
@@ -54,9 +55,7 @@ void backward_pass_2layer(Matrix Output, Matrix Hidden, Matrix Hidden_raw, Matri
 }
 float mean_squared_error(Matrix Prediction, Matrix Target) {
     if (Prediction.rows != Target.rows || Prediction.cols != Target.cols) {
-        fprintf(stderr,RED_TEXT("ERROR: Matrices must be the same size to Mean Squared Error (M.E.S) !\n"));
-        fprintf(stderr, YELLOW_TEXT("WARNING: Exiting..."));
-        exit(1);
+        FATAL_ERROR("Matrices must be the same size to Mean Squared Error (M.E.S). Exiting...");
     }
 
     int total = Prediction.rows * Prediction.cols;
@@ -72,9 +71,7 @@ float mean_squared_error(Matrix Prediction, Matrix Target) {
 
 float cross_entropy_loss(Matrix Prediction, Matrix Target){
     if (Prediction.rows != Target.rows || Prediction.cols != Target.cols) {
-        fprintf(stderr,RED_TEXT("ERROR: Matrices must be the same size for Cross Entropy Loss !\n"));
-        fprintf(stderr, YELLOW_TEXT("WARNING: Exiting..."));
-        exit(1);
+        FATAL_ERROR("Matrices must be the same size for Cross Entropy Loss. Exiting...");
     }
     int total = Prediction.rows * Prediction.cols;
     float sum = 0.0f;
