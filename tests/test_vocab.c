@@ -3,10 +3,6 @@
 #include <string.h>
 #include "vocabulary.h"
 
-/*
-Comprehensive Vocabulary Testing File
-*/
-
 // Testing Macros
 #define EXPECT_EQ_INT(actual, expected) \
     do { \

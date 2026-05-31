@@ -3,15 +3,6 @@
 #include <stdio.h>
 #include "matrix.h"
 
-/*
-Comprehensive Testing File
-
-Will be used for :
-        >Verify correct behavior (Does the function work and do it's job proprely)
-        >Catch edges cases (Boundary Condition)
-        >Will return clear feedback if something fails
-*/
-
 // Testing Macro
 #define EXPECT_NEAR(actual, expected, tol) \
     do { \

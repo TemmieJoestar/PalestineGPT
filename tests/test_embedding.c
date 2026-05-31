@@ -4,10 +4,6 @@
 #include "matrix.h"
 #include "embedding.h"
 
-/*
-Comprehensive Embedding Testing File
-*/
-
 // Testing Macros
 #define EXPECT_EQ_INT(actual, expected) \
     do { \
