@@ -113,26 +113,26 @@ Matrix matrix_sigmoid(Matrix Input){
 }
 
 Matrix matrix_softmax(Matrix Input) { 
-    float max = Input.data[0];
-    int total = Input.rows * Input.cols;
-    
-    for (int i = 1; i < total; i++) {
-        if (Input.data[i] > max) {
-            max = Input.data[i];
-        }
-    }
-    
     Matrix Result = create_matrix(Input.rows, Input.cols);
-    float total_sum = 0.0f;
     
-    for (int i = 0; i < total; i++) {
-        float e = expf(Input.data[i] - max);
-        Result.data[i] = e;
-        total_sum += e;
-    }
-    
-    for (int i = 0; i < total; i++) {
-        Result.data[i] = Result.data[i] / total_sum;
+    for (int i = 0; i < Input.rows; i++) {
+        float row_max = get_value(Input, i, 0);
+        for (int j = 1; j < Input.cols; j++) {
+            float val = get_value(Input, i, j);
+            if (val > row_max) row_max = val;
+        }
+        
+        float row_sum = 0.0f;
+        for (int j = 0; j < Input.cols; j++) {
+            float e = expf(get_value(Input, i, j) - row_max);
+            set_value(Result, i, j, e);
+            row_sum += e;
+        }
+        
+        for (int j = 0; j < Input.cols; j++) {
+            float normalized_val = get_value(Result, i, j) / row_sum;
+            set_value(Result, i, j, normalized_val);
+        }
     }
     
     return Result;
