@@ -9,6 +9,8 @@
 #define MAGENTA_TEXT(x) "\033[35;1m" x "\033[0m"
 #define BOLD(x) "\033[1m" x "\033[0m"
 
+extern const char* VOCAB;
+
 /**
  * encode - Convert text string to array of token IDs
  * @text: Input string to encode
