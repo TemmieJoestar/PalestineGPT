@@ -6,38 +6,6 @@
 #include "attention.h"
 #include "error.h"
 
-
-int main() {
-    int seq_len = 3;
-    int d_k = 4;
-
-    Matrix Q = create_matrix(seq_len, d_k);
-    Matrix K = create_matrix(seq_len, d_k);
-
-    for (int r = 0; r < seq_len; r++) {
-        for (int c = 0; c < d_k; c++) {
-            set_value(Q, r, c, (float)(r + c));
-        }
-    }
-
-    for (int r = 0; r < seq_len; r++) {
-        for (int c = 0; c < d_k; c++) {
-            set_value(K, r, c, (float)(r == c ? 1.0 : 0.0));
-        }
-    }
-    Matrix scores = compute_attention_scores(Q, K, d_k);
-
-    printf("Scaled Attention Scores Matrix (%d x %d):\n", seq_len, seq_len);
-    print_matrix(scores);
-
-
-    free_matrix(Q);
-    free_matrix(K);
-    free_matrix(scores);
-
-    return 0;
-}
-
 Matrix compute_attention_scores(Matrix Q, Matrix K, int d_k){
     if (Q.data == NULL || K.data == NULL){
         FATAL_ERROR("Q or K data is NULL! Exiting...");
@@ -64,4 +32,146 @@ Matrix compute_attention_scores(Matrix Q, Matrix K, int d_k){
     free_matrix(K_t);
     free_matrix(Temp);
     return Result;
+}
+
+Matrix compute_attention_weights(Matrix AttentionScores){
+    if (AttentionScores.data == NULL){
+        FATAL_ERROR("Attention_Score is NULL. Exiting...");
+    }
+
+    if (AttentionScores.rows == 0 || AttentionScores.cols == 0){
+        FATAL_ERROR("Matrix dimensions cannot be 0. Exiting...");
+    }
+
+    Matrix AttentionWeights = matrix_softmax(AttentionScores);
+
+    return AttentionWeights;
+}
+
+Matrix apply_attention_weights(Matrix AttentionWeights, Matrix V){
+    if (AttentionWeights.data == NULL || V.data == NULL){
+        FATAL_ERROR("AttentionWeights or V data is NULL. Exiting...");
+    }
+
+    if (AttentionWeights.rows == 0 || AttentionWeights.cols == 00 || V.rows == 0 || V.cols == 0){
+        FATAL_ERROR("Matrix dimensions cannot be 0. Exiting...");
+    }
+
+    Matrix Result = matrix_multiply(AttentionWeights,V);
+    return Result;
+}
+
+Matrix single_attention_forward(AttentionHead* Head, Matrix Input){
+    Matrix Q = matrix_multiply(Input, Head->Q_weights);
+    Matrix K = matrix_multiply(Input, Head->K_weights);
+    Matrix V = matrix_multiply(Input, Head->V_weights);
+
+    Matrix AttentionScores = compute_attention_scores(Q, K, Head->d_k);
+
+    if (AttentionScores.data == NULL){
+        FATAL_ERROR("Score data is NULL. Exiting...");
+    }
+    
+    if (AttentionScores.rows == 0 || AttentionScores.cols == 0){
+        FATAL_ERROR("Score dimensions cannot be 0. Exiting...");
+    }
+
+    Matrix AttentionWeights = compute_attention_weights(AttentionScores);
+
+    if (AttentionWeights.data == NULL){
+        FATAL_ERROR("NormalizedAttentionScores data is NULL. Exiting...");
+    }
+
+    if (AttentionWeights.rows == 0 || AttentionWeights.cols == 0){
+        FATAL_ERROR("AttentionWeights dimensions cannot be 0. Exiting...");
+    }
+
+    Matrix ContextualMeaning = apply_attention_weights(AttentionWeights, V);
+
+    if (ContextualMeaning.data == NULL){
+        FATAL_ERROR("ContextualMeaning data is NULL. Exiting...");
+    }
+
+    if (ContextualMeaning.rows == 0 || ContextualMeaning.cols == 0){
+        FATAL_ERROR("ContextualMeaning dimensions cannot be 0. Exiting...");
+    }
+
+    Matrix UpdatedEmbedding = matrix_addition(Input, ContextualMeaning);
+
+    free_matrix(Q);
+    free_matrix(K);
+    free_matrix(V);
+    free_matrix(AttentionScores);
+    free_matrix(AttentionWeights);
+    free_matrix(ContextualMeaning);
+
+    return UpdatedEmbedding;
+}
+
+Matrix multihead_attention_forward(MultiHeadAttention* MHA, Matrix Input){
+    if (Input.data == NULL){
+        FATAL_ERROR("Input data is NULL. Exiting...");
+    }
+    Matrix MultiHead = create_matrix(Input.rows, MHA->num_heads * MHA->Heads[0].d_k);
+
+
+    for (int count = 0; count < MHA->num_heads; count++){
+        Matrix Q = matrix_multiply(Input, MHA->Heads[count].Q_weights);
+        Matrix K = matrix_multiply(Input, MHA->Heads[count].K_weights);
+        Matrix V = matrix_multiply(Input, MHA->Heads[count].V_weights);
+
+
+        Matrix AttentionScores = compute_attention_scores(Q,K,MHA->Heads[count].d_k);
+        
+        if (AttentionScores.data == NULL){
+            FATAL_ERROR("AttentionScores data is NULL. Exiting...");
+        }
+        
+        if (AttentionScores.rows == 0 || AttentionScores.cols == 0){
+            FATAL_ERROR("AttentionScores dimensions cannot be 0. Exiting...");
+        }
+        
+        Matrix AttentionsWeights = compute_attention_weights(AttentionScores);
+
+        if (AttentionsWeights.data == NULL){
+            FATAL_ERROR("AttentionWeights data is NULL. Exiting...");
+        }
+
+        if (AttentionsWeights.rows == 0 || AttentionsWeights.cols == 0){
+            FATAL_ERROR("AttentionWeights dimension cannot be 0. Exiting...");
+        }
+
+        Matrix ContextualMeaning = apply_attention_weights(AttentionsWeights, V);
+
+        if (ContextualMeaning.data == NULL){
+            FATAL_ERROR("ContextualMeaning data is NULL. Exiting...");
+        }
+
+        if (ContextualMeaning.rows == 0 || ContextualMeaning.cols == 0){
+            FATAL_ERROR("ContextualMeaning dimensions cannot be 0. Exiting...");
+        }
+
+        for (int i = 0; i < ContextualMeaning.rows; i++){
+            for (int j = 0; j < ContextualMeaning.cols; j++){
+                int target_col = (count * ContextualMeaning.cols) + j;
+                set_value(MultiHead, i, target_col, get_value(ContextualMeaning,i,j));
+            }
+        }
+
+        free_matrix(Q);
+        free_matrix(K);
+        free_matrix(V);
+        free_matrix(AttentionScores);
+        free_matrix(AttentionsWeights);
+        free_matrix(ContextualMeaning);
+
+    }
+
+    Matrix ProjectedOutput = matrix_multiply(MultiHead, MHA->Output_Weights);
+    free_matrix(MultiHead);
+
+    Matrix FinalOutput = matrix_addition(Input, ProjectedOutput);
+    
+    free_matrix(ProjectedOutput);
+    return FinalOutput;
 }
