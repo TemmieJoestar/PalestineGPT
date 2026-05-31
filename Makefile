@@ -22,7 +22,8 @@ LIB_SOURCES = $(SRC_DIR)/matrix.c \
               $(SRC_DIR)/vocabulary.c \
               $(SRC_DIR)/embedding.c \
               $(SRC_DIR)/tokenizer.c \
-			  $(SRC_DIR)/ngram.c
+			  $(SRC_DIR)/ngram.c \
+			  $(SRC_DIR)/attention.c
 
 ALL_HEADERS = $(INC_DIR)/matrix.h \
               $(INC_DIR)/gradient_descent.h \
@@ -30,7 +31,8 @@ ALL_HEADERS = $(INC_DIR)/matrix.h \
               $(INC_DIR)/vocabulary.h \
               $(INC_DIR)/embedding.h \
               $(INC_DIR)/tokenizer.h \
-              $(INC_DIR)/ngram.h
+              $(INC_DIR)/ngram.h \
+			  $(INC_DIR)/attention.h
 all: main
 
 main: $(SRC_DIR)/main.c $(LIB_SOURCES) $(ALL_HEADERS)
