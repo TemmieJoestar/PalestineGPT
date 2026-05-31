@@ -63,6 +63,4 @@ MIT License - See [LICENSE](LICENSE) file
 
 **Repository:** [PalestineGPT on GitHub](https://github.com/TemmieJoestar/PalestineGPT)
 
-**Goal:** Understand every detail of how LLMs work by implementing one from first principles.
-
-Built from scratch by [TemmieJoestar](https://github.com/TemmieJoestar) as a deep learning journey in C.
+Built from scratch by [TemmieJoestar](https://github.com/TemmieJoestar).
