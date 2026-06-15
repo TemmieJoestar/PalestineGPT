@@ -1,5 +1,6 @@
 #include <math.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include "matrix.h"
 
@@ -18,7 +19,6 @@ int float_equals(float a, float b);
 void test_matrix_multiply();
 void test_matrix_addition();
 void test_matrix_subtraction();
-void test_matrix_transpose();
 void test_matrix_hadamard();
 void test_matrix_relu();
 void test_matrix_softmax();
@@ -39,7 +39,6 @@ int main() {
     test_matrix_hadamard();
     
     printf(MAGENTA_TEXT("\n--- Transformations & Scalars ---\n"));
-    test_matrix_transpose();
     test_matrix_scalar_multiply();
     test_matrix_scalar_addition();
     test_matrix_scalar_subtraction();
@@ -55,7 +54,6 @@ int main() {
     
     printf(GREEN_TEXT("\n=== All Tests Passed! ===\n"));
     return 0;
-
 }
 
 // Helper function to compare floats
@@ -158,7 +156,8 @@ void test_matrix_multiply() {
     set_value(B, 2, 0, 11.0f); set_value(B, 2, 1, 12.0f);
     
     // Create Testing Matrix
-    Matrix C = matrix_multiply(A, B);
+    Matrix C = create_matrix(2, 2);
+    matrix_multiply(A, B, C, false, false);
 
     // Check Values
     // Multiplied: [58 64]
@@ -176,44 +175,7 @@ void test_matrix_multiply() {
     printf(GREEN_TEXT("PASSED\n"));
 }
 
-// Test 4: Matrix Tranpose
-void test_matrix_transpose() {
-    printf(BOLD("Testing matrix_transpose... "));
-    
-    // Create Tested Matrix
-    // Fill A : [1 2 3]
-    //            [4 5 6]
-    Matrix A = create_matrix(2, 3);
-    set_value(A, 0, 0, 1.0f); set_value(A, 0, 1, 2.0f); set_value(A, 0, 2, 3.0f);
-    set_value(A, 1, 0, 4.0f); set_value(A, 1, 1, 5.0f); set_value(A, 1, 2, 6.0f);
-    
-    // Create Testing Matrix
-    Matrix C = matrix_transpose(A);
-    
-    // Check dimensions
-    if (C.rows != 3 || C.cols != 2) {
-        printf(RED_TEXT("FAILED: Wrong dimensions (expected 3x2, got %dx%d)\n"), C.rows, C.cols);
-        exit(1);
-    }
-    
-    // Check Values
-    //Transposed: [1 4]
-    //            [2 5]
-    //            [3 6]
-    EXPECT_NEAR(get_value(C, 0, 0), 1.0f, 0.0001f);
-    EXPECT_NEAR(get_value(C, 0, 1), 4.0f, 0.0001f);
-    EXPECT_NEAR(get_value(C, 1, 0), 2.0f, 0.0001f);
-    EXPECT_NEAR(get_value(C, 1, 1), 5.0f, 0.0001f);
-    EXPECT_NEAR(get_value(C, 2, 0), 3.0f, 0.0001f);
-    EXPECT_NEAR(get_value(C, 2, 1), 6.0f, 0.0001f);
-    
-    // Clean Up
-    free_matrix(A);
-    free_matrix(C);
-    printf(GREEN_TEXT("PASSED\n"));
-}
-
-// Test 5: Matrix Hadamard
+// Test 4: Matrix Hadamard
 void test_matrix_hadamard(){
     printf(BOLD("Testing matrix_hadamard... "));
 
@@ -250,7 +212,7 @@ void test_matrix_hadamard(){
     printf(GREEN_TEXT("PASSED\n"));
 }
 
-// Test 6: Matrix ReLu
+// Test 5: Matrix ReLu
 void test_matrix_relu(){
     printf(BOLD("Testing matrix_relu... "));
 
@@ -280,7 +242,7 @@ void test_matrix_relu(){
     printf(GREEN_TEXT("PASSED\n"));
 }
 
-// Test 7: Softmax
+// Test 6: Softmax
 void test_matrix_softmax() {
     printf(BOLD("Testing matrix_softmax... "));
 
@@ -293,13 +255,13 @@ void test_matrix_softmax() {
     // Create Testing Matrix
     Matrix C = matrix_softmax(A);
 
-    // Test 7-1: Check specific probabilities
+    // Test 6-1: Check specific probabilities
     // Expected for [1, 2, 3]: [0.0900, 0.2447, 0.6652]
     EXPECT_NEAR(get_value(C, 0, 0), 0.090031f, 0.0001f);
     EXPECT_NEAR(get_value(C, 0, 1), 0.244728f, 0.0001f);
     EXPECT_NEAR(get_value(C, 0, 2), 0.665241f, 0.0001f);
 
-    // Test 7-2: Sum should equal 1.0
+    // Test 6-2: Sum should equal 1.0
     float sum = 0.0f;
     for (int i = 0; i < 3; i++) {
         sum += C.data[i];
@@ -312,7 +274,7 @@ void test_matrix_softmax() {
     printf(GREEN_TEXT("PASSED\n"));
 }
 
-// Test 8: Scalar Multiplication
+// Test 7: Scalar Multiplication
 void test_matrix_scalar_multiply() {
     printf(BOLD("Testing matrix_scalar_multiply... "));
 
@@ -341,7 +303,7 @@ void test_matrix_scalar_multiply() {
     printf(GREEN_TEXT("PASSED\n"));
 }
 
-// Test 9: Matrix Copy
+// Test 8: Matrix Copy
 void test_matrix_copy() {
     printf(BOLD("Testing matrix_copy... "));
     
@@ -367,7 +329,7 @@ void test_matrix_copy() {
     printf(GREEN_TEXT("PASSED\n"));
 }
 
-// Test 10: Matrix Sigmoid
+// Test 9: Matrix Sigmoid
 void test_matrix_sigmoid(){
     printf(BOLD("Testing matrix_sigmoid... "));
 
@@ -394,7 +356,7 @@ void test_matrix_sigmoid(){
     printf(GREEN_TEXT("PASSED\n"));
 }
 
-// Test 11: Scalar Addition
+// Test 10: Scalar Addition
 void test_matrix_scalar_addition() {
     printf(BOLD("Testing matrix_scalar_addition... "));
 
@@ -418,7 +380,7 @@ void test_matrix_scalar_addition() {
     printf(GREEN_TEXT("PASSED\n"));
 }
 
-// Test 12: Scalar Subtraction
+// Test 11: Scalar Subtraction
 void test_matrix_scalar_subtraction() {
     printf(BOLD("Testing matrix_scalar_subtraction... "));
 
@@ -442,7 +404,7 @@ void test_matrix_scalar_subtraction() {
     printf(GREEN_TEXT("PASSED\n"));
 }
 
-// Test 13: Matrix Normalization
+// Test 12: Matrix Normalization
 void test_matrix_normalize() {
     printf(BOLD("Testing matrix_normalize... "));
 

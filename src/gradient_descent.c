@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <math.h>
 #include "matrix.h"
 #include "error.h"
@@ -7,7 +8,8 @@
 #define EPSILON 1e-7f // Value close to 0 
 
 Matrix forward_pass(Matrix Weights, Matrix Input) {
-    Matrix Prediction = matrix_multiply(Input, Weights);
+    Matrix Prediction = create_matrix(Input.rows, Weights.cols);
+    matrix_multiply(Input, Weights, Prediction, false, false);
     return Prediction;
 }
 
@@ -15,10 +17,14 @@ Matrix forward_pass(Matrix Weights, Matrix Input) {
 Matrix backward_pass(Matrix Prediction, Matrix Input, Matrix Target) {
     float diff = get_value(Prediction, 0, 0) - get_value(Target, 0, 0);
     
-    Matrix Input_T = matrix_transpose(Input);
-    Matrix Gradient = matrix_scalar_multiply(Input_T, 2.0f * diff);
+    Matrix Gradient = create_matrix(Input.cols, Input.rows);
+    float scalar = 2.0f * diff;
+    for (int i = 0; i < Input.rows; i++) {
+        for (int j = 0; j < Input.cols; j++) {
+            Gradient.data[j * Input.rows + i] = Input.data[i * Input.cols + j] * scalar;
+        }
+    }
     
-    free_matrix(Input_T);
     return Gradient; 
 }
 
@@ -27,14 +33,12 @@ void backward_pass_2layer(Matrix Output, Matrix Hidden, Matrix Hidden_raw, Matri
 
     Matrix Gradient_B2 = matrix_subtraction(Output, Target);
 
-    Matrix Hidden_T = matrix_transpose(Hidden);
-    Matrix Gradient_W2 = matrix_multiply(Hidden_T, Gradient_B2);
-    free_matrix(Hidden_T);
+    Matrix Gradient_W2 = create_matrix(Hidden.cols, Gradient_B2.cols);
+    matrix_multiply(Hidden, Gradient_B2, Gradient_W2, true, false);
     
 
-    Matrix Weights_2_T = matrix_transpose(Weights_2);
-    Matrix Gradient_Hidden = matrix_multiply(Gradient_B2, Weights_2_T);
-    free_matrix(Weights_2_T);
+    Matrix Gradient_Hidden = create_matrix(Gradient_B2.rows, Weights_2.rows);
+    matrix_multiply(Gradient_B2, Weights_2, Gradient_Hidden, false, true);
 
     Matrix Gradient_Hidden_masked = matrix_relu_derivative(Hidden_raw, Gradient_Hidden);
     free_matrix(Gradient_Hidden);
@@ -42,10 +46,9 @@ void backward_pass_2layer(Matrix Output, Matrix Hidden, Matrix Hidden_raw, Matri
     Matrix Gradient_B1 = matrix_copy(Gradient_Hidden_masked);
     
 
-    Matrix Input_T = matrix_transpose(Input);
-    Matrix Gradient_W1 = matrix_multiply(Input_T, Gradient_Hidden_masked);
+    Matrix Gradient_W1 = create_matrix(Input.cols, Gradient_Hidden_masked.cols);
+    matrix_multiply(Input, Gradient_Hidden_masked, Gradient_W1, true, false);
     
-    free_matrix(Input_T);
     free_matrix(Gradient_Hidden_masked);
     
     *Grad_W1_out = Gradient_W1; 
@@ -109,12 +112,14 @@ Matrix update_weights_momentum(Matrix Weight, Matrix Gradient, Matrix *Velocity,
 
 
 Matrix forward_pass_2layer(Matrix Input, Matrix Weights_1, Matrix Weights_2, Matrix Bias_1, Matrix Bias_2, Matrix *Hidden_out, Matrix *Hidden_raw_out){
-    Matrix Hidden_raw_temp = matrix_multiply(Input, Weights_1);
+    Matrix Hidden_raw_temp = create_matrix(Input.rows, Weights_1.cols);
+    matrix_multiply(Input, Weights_1, Hidden_raw_temp, false, false);
     Matrix Hidden_raw = matrix_addition(Hidden_raw_temp,Bias_1);
     Matrix Hidden = matrix_relu(Hidden_raw);
     free_matrix(Hidden_raw_temp);
     
-    Matrix Output_raw_temp = matrix_multiply(Hidden, Weights_2); 
+    Matrix Output_raw_temp = create_matrix(Hidden.rows, Weights_2.cols); 
+    matrix_multiply(Hidden, Weights_2, Output_raw_temp, false, false);
     Matrix Output_raw = matrix_addition(Output_raw_temp,Bias_2);
     Matrix Output = matrix_sigmoid(Output_raw);
     free_matrix(Output_raw_temp);
@@ -127,12 +132,14 @@ Matrix forward_pass_2layer(Matrix Input, Matrix Weights_1, Matrix Weights_2, Mat
 }
 
 Matrix forward_pass_2layer_softmax(Matrix Input, Matrix Weights_1, Matrix Weights_2, Matrix Bias_1, Matrix Bias_2, Matrix *Hidden_out, Matrix *Hidden_raw_out) {
-    Matrix Hidden_raw_temp = matrix_multiply(Input, Weights_1);
+    Matrix Hidden_raw_temp = create_matrix(Input.rows, Weights_1.cols);
+    matrix_multiply(Input, Weights_1, Hidden_raw_temp, false, false);
     Matrix Hidden_raw = matrix_addition(Hidden_raw_temp, Bias_1);
     Matrix Hidden = matrix_relu(Hidden_raw);
     free_matrix(Hidden_raw_temp);
     
-    Matrix Output_raw_temp = matrix_multiply(Hidden, Weights_2); 
+    Matrix Output_raw_temp = create_matrix(Hidden.rows, Weights_2.cols); 
+    matrix_multiply(Hidden, Weights_2, Output_raw_temp, false, false);
     Matrix Output_raw = matrix_addition(Output_raw_temp, Bias_2);
     
     Matrix Output = matrix_softmax(Output_raw); 
