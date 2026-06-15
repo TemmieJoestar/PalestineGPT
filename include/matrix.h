@@ -113,15 +113,24 @@ void matrix_swap_rows(Matrix M, int row1, int row2);
  * ============================================================================ */
 
 /**
- * matrix_multiply - Matrix multiplication (linear algebra)
- * @a: Left matrix (M x N)
- * @b: Right matrix (N x P)
- * 
- * Returns: Result matrix (M x P)
- * Note: a.cols must equal b.rows, exits with error otherwise
- * Formula: C[i][j] = sum(A[i][k] * B[k][j]) for all k
+ * matrix_multiply - Performs matrix multiplication with optional transposition
+ * @A: Left input matrix
+ * @B: Right input matrix
+ * @Result: Output matrix where the product is stored
+ * @is_transA: If true, matrix A is transposed before multiplication
+ * @is_transB: If true, matrix B is transposed before multiplication
+ * * Note: The dimensions must be compatible for multiplication after accounting 
+ * for any transpositions:
+ * - Let A_cols = is_transA ? A.rows : A.cols
+ * - Let B_rows = is_transB ? B.rows : B.cols
+ * - A_cols must equal B_rows, exits with error otherwise.
+ * * Formula: 
+ * Let A' = is_transA ? transpose(A) : A  (Size: M x N)
+ * Let B' = is_transB ? transpose(B) : B  (Size: N x P)
+ * Result[i][j] = sum(A'[i][k] * B'[k][j]) for k from 0 to N-1
+ * The Result matrix must be of size M x P.
  */
-Matrix matrix_multiply(Matrix a, Matrix b);
+void matrix_multiply(Matrix A, Matrix B, Matrix Result, bool is_transA, bool is_transB);
 
 /**
  * matrix_addition - Element-wise addition
@@ -157,16 +166,7 @@ Matrix matrix_hadamard(Matrix a, Matrix b);
  * MATRIX TRANSFORMATIONS (ONE MATRIX)
  * ============================================================================ */
 
-/**
- * matrix_transpose - Swap rows and columns
- * @m: Matrix to transpose (M x N)
- * 
- * Returns: Transposed matrix (N x M)
- * Example: [[1,2,3],    becomes    [[1,4],
- *                  [4,5,6]]                         [2,5],
- *                                                       [3,6]]
- */
-Matrix matrix_transpose(Matrix m);
+
 
 /**
  * matrix_scalar_multiply - Multiply all elements by a scalar

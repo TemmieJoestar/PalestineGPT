@@ -1,6 +1,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include "matrix.h"
 #include "error.h"
 
@@ -36,26 +37,66 @@ void free_matrix(Matrix m) {
         }
 }
 
-Matrix matrix_multiply(Matrix a, Matrix b) {  
-    if (a.cols != b.rows) {  
-        FATAL_ERROR("Inner dimensions must match (A.cols == B.rows). Exiting...");
+void matrix_multiply(Matrix A, Matrix B, Matrix Result, bool is_transA, bool is_transB){
+    int inner_A = is_transA ? A.rows : A.cols;
+    int inner_B = is_transB ? B.cols : B.rows;
+
+    if (inner_A != inner_B) {
+        FATAL_ERROR("Inner dimensions must match for multiplication. Exiting...");
     }
     
-    Matrix c = create_matrix(a.rows, b.cols);
-    
-    for (int i = 0; i < c.rows; i++) {
-        for (int j = 0; j < c.cols; j++) {
-            float sum = 0.0f;
-            for (int k = 0; k < a.cols; k++) {  
-                float a_val = a.data[i * a.cols + k];
-                float b_val = b.data[k * b.cols + j];
-                sum += a_val * b_val;
+    int inner_dim = inner_A; 
+
+    if (!is_transA && !is_transB){
+        // Branch 1: Standard Multiplication
+        for (int i = 0; i < A.rows; i++){
+            for (int j = 0; j < B.cols; j++){
+                float sum = 0.0f;
+                for (int k = 0; k < inner_dim; k++){
+                    sum += A.data[i * A.cols + k] * B.data[k * B.cols + j];
+                }
+                Result.data[i * Result.cols + j] = sum;
             }
-            set_value(c, i, j, sum);
+        } 
+    }
+    else if (is_transA && !is_transB){
+        // Branch 2: A is Transposed, B is Normal
+        for (int i = 0; i < A.cols; i++){
+            for (int j = 0; j < B.cols; j++){
+                float sum = 0.0f;
+                for (int k = 0; k < inner_dim; k++){
+                    sum += A.data[k * A.cols + i] * B.data[k * B.cols + j];
+                }
+                Result.data[i * Result.cols + j] = sum;
+            }
         }
     }
-    return c;
+    else if (!is_transA && is_transB){
+        // Branch 3: A is Normal, B is Transposed
+        for (int i = 0; i < A.rows; i++){
+            for (int j = 0; j < B.rows; j++){
+                float sum = 0.0f;
+                for (int k = 0; k < inner_dim; k++){
+                    sum += A.data[i * A.cols + k] * B.data[j * B.cols + k];
+                }
+                Result.data[i * Result.cols + j] = sum;
+            }
+        }
+    }
+    else if (is_transA && is_transB){
+        // Branch 4: A is Transposed, B is Transposed
+        for (int i = 0; i < A.cols; i++){
+            for (int j = 0; j < B.rows; j++){
+                float sum = 0.0f;
+                for (int k = 0; k < inner_dim; k++){
+                    sum += A.data[k * A.cols + i] * B.data[j * B.cols + k];
+                }
+                Result.data[i * Result.cols + j] = sum;
+            }
+        }
+    }
 }
+
 
 void print_matrix(Matrix Input) {
     int total = Input.rows * Input.cols;
@@ -167,19 +208,6 @@ Matrix matrix_subtraction(Matrix a, Matrix b) {
             int index = (i * a.cols) + j;
             float result = a.data[index] - b.data[index];
             set_value(c, i, j, result);
-        }
-    }
-    return c;
-}
-
-Matrix matrix_transpose(Matrix m) {
-    Matrix c = create_matrix(m.cols, m.rows);
-
-    for (int i = 0; i < m.rows; i++) {
-        for (int j = 0; j < m.cols; j++) {
-            int index = (i * m.cols) + j;
-            float value = m.data[index];
-            set_value(c, j, i, value);
         }
     }
     return c;
