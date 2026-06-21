@@ -68,12 +68,9 @@ void free_vocab(Vocabulary* vocab){
     if (vocab == NULL) {
         return;
     }
-    // We free each individual token string
     for (int i = 0; i < vocab->vocab_size; i++){
         free(vocab->tokens[i]);
     }
-    // We free the tokens array
     free(vocab->tokens);
-    // We free the Vocabulary struct itself
     free(vocab);
 }
