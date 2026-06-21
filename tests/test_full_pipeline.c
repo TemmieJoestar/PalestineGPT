@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
 #include "matrix.h"
 #include "vocabulary.h"
 #include "tokenizer.h"
