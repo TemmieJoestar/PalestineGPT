@@ -10,6 +10,8 @@
 #define MAGENTA_TEXT(x) "\033[35;1m" x "\033[0m"
 #define BOLD(x) "\033[1m" x "\033[0m"
 
+#include <stdbool.h>
+
 /**
  * Matrix structure
  * 
@@ -18,12 +20,14 @@
  * Fields:
  *   rows - Number of rows
  *   cols - Number of columns
- *   data - Pointer to flat array of size (rows * cols)
+ *   data - Pointer to flat array of size (rows * cols) containing the matrix data
+ *   grad - Pointer to flat array of size (rows * cols) containing the matrix gradient
  */
 typedef struct {
     int rows;
     int cols;
     float* data;
+    float* grad;
 } Matrix;
 
 /* ============================================================================
@@ -38,7 +42,7 @@ typedef struct {
  * Returns: Matrix initialized to zero (uses calloc)
  * Note: Must call free_matrix() when done to avoid memory leaks
  */
-Matrix create_matrix(int rows, int cols);
+Matrix create_matrix(int rows, int cols, bool requires_grad);
 
 /**
  * free_matrix - Free memory allocated for a matrix
@@ -108,6 +112,22 @@ Matrix get_row(Matrix Input, int row_index);
  */
 void matrix_swap_rows(Matrix M, int row1, int row2);
 
+/**
+ * matrix_sum_rows - Sums all rows of the input matrix into a single row vector
+ * @Input:  The source matrix of shape (N, D)
+ * @Output: The destination vector of shape (1, D)
+ *  Note: 
+ * - Output.data will be zeroed out before summation.
+ * - Exits with an error if Output is not shape (1, Input.cols).
+ */
+void matrix_sum_rows(Matrix Input, Matrix Output);
+
+/**
+ * matrix_reset - Sets all elements of the matrix data and grad to 0.0f
+ * @m: The matrix to reset
+ */
+void matrix_reset(Matrix input);
+
 /* ============================================================================
  * MATRIX ARITHMETIC (TWO MATRICES)
  * ============================================================================ */
@@ -141,6 +161,17 @@ void matrix_multiply(Matrix A, Matrix B, Matrix Result, bool is_transA, bool is_
  * Note: Matrices must be same size, exits with error otherwise
  */
 Matrix matrix_addition(Matrix a, Matrix b);
+
+/**
+ * matrix_add_bias - Adds bias 
+ * @Input: Input Matrix 
+ * @Bias: Bias Matrix
+ * @Output: Output Matrix
+ * 
+ * Returns: Populated pre-created matrix, with Bias added to each values
+ * Note: Bias matrix has to be (1,Cols), user must free the Input Matrix if not used later.
+ */
+void matrix_add_bias(Matrix Input, Matrix Bias, Matrix Output);
 
 /**
  * matrix_subtraction - Element-wise subtraction
@@ -200,28 +231,29 @@ Matrix matrix_scalar_subtraction(Matrix Input, float scalar);
 /**
  * matrix_relu - Apply ReLU activation function
  * @Input: Input matrix
+ * @Output: Output Matrix
  * 
- * Returns: New matrix where result[i][j] = max(0, m[i][j])
- * ReLU (Rectified Linear Unit): negative values become 0, positive unchanged
+ * Returns: Populated pre-created matrix where Output[i][j] = max(0, m[i][j])
+ * Note: User has to free the Input matrix if not used anymore
  */
-Matrix matrix_relu(Matrix Input);
+void matrix_relu(Matrix Input, Matrix Output);
 
 
 /**
  * matrix_relu_derivative - Apply ReLU derivative during backpropagation
  * @Hidden_raw: Values before ReLU activation (pre-activation)
  * @Gradient_Hidden: Gradient flowing back from the next layer
+ * @Output: Matrix to store the result of the masked gradient
  * 
- * Returns: Masked gradient where values are kept only where Hidden_raw > 0
- * 
- * How it works:
- *   - ReLU derivative is 1 for positive inputs, 0 for negative
- *   - This masks the incoming gradient element-wise
- *   - Formula: output[i] = Gradient_Hidden[i] if Hidden_raw[i] > 0, else 0
- * 
- * Note: Both matrices must have the same dimensions.
+ *   How it works:
+ * - ReLU derivative is 1 for positive inputs, 0 for negative.
+ * - This masks the incoming gradient element-wise based on the pre-activation state.
+ * - Formula: Output[i] = (Hidden_raw[i] > 0) ? Gradient_Hidden[i] : 0
+ *   Note: 
+ * - All three matrices must have the same dimensions.
+ * - Performs the operation in-place if Gradient_Hidden and Output are the same matrix.
  */
-Matrix matrix_relu_derivative(Matrix Hidden_raw, Matrix Gradient_Hidden);
+void matrix_relu_derivative(Matrix Hidden_raw, Matrix Gradient_Hidden, Matrix Output);
 
 /**
  * matrix_sigmoid - Apply Sigmoid activation function

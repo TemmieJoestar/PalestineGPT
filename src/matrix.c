@@ -2,15 +2,29 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
 #include "matrix.h"
 #include "error.h"
 
-Matrix create_matrix(int rows, int cols) {
+Matrix create_matrix(int rows, int cols, bool requires_grad) {
     Matrix m;
     m.rows = rows;
     m.cols = cols; 
     
     m.data = calloc(rows * cols, sizeof(float));
+    if (m.data == NULL){
+        FATAL_ERROR("Failed to allocate memory for DATA");
+    }
+
+    if (requires_grad){
+        m.grad = calloc(rows * cols, sizeof(float));
+        if (m.grad == NULL){
+            FATAL_ERROR("Failed to allocate memory for GRAD");
+        }
+    } else {
+        m.grad = NULL;
+    }
+
     return m;
 }
 
@@ -32,9 +46,8 @@ float get_value(Matrix m, int r, int c) {
 }
 
 void free_matrix(Matrix m) { 
-    if (m.data != NULL) {
-            free(m.data);
-        }
+    if (m.data != NULL) free(m.data);
+    if (m.grad != NULL) free(m.grad);
 }
 
 void matrix_multiply(Matrix A, Matrix B, Matrix Result, bool is_transA, bool is_transB){
@@ -109,42 +122,40 @@ void print_matrix(Matrix Input) {
     }
 }
 
-Matrix matrix_relu(Matrix Input) { 
+void matrix_relu(Matrix Input, Matrix Output) { 
     int total = Input.rows * Input.cols;
-    Matrix Result = create_matrix(Input.rows, Input.cols);
 
     for (int i = 0; i < total; i++) {
         if (Input.data[i] < 0.0f) {
-            Result.data[i] = 0.0f;
+            Output.data[i] = 0.0f;
         } else {
-            Result.data[i] = Input.data[i];
+            Output.data[i] = Input.data[i];
         }
     }
-    return Result;
 }
 
-Matrix matrix_relu_derivative(Matrix Hidden_raw, Matrix Gradient_Hidden){
-    if (Hidden_raw.rows != Gradient_Hidden.rows || Hidden_raw.cols != Gradient_Hidden.cols) {
-        FATAL_ERROR("Matrices must be the same size. Exiting...");
+void matrix_relu_derivative(Matrix Hidden_raw, Matrix Gradient_Hidden, Matrix Output) {
+    if (Hidden_raw.rows != Gradient_Hidden.rows || 
+        Hidden_raw.cols != Gradient_Hidden.cols ||
+        Hidden_raw.rows != Output.rows || 
+        Hidden_raw.cols != Output.cols) {
+        FATAL_ERROR("Matrices must have identical dimensions for ReLU derivative.");
     }
 
     int total = Hidden_raw.rows * Hidden_raw.cols;
-    Matrix output = create_matrix(Hidden_raw.rows,Hidden_raw.cols);
-
-    for (int i = 0; i < total; i++){
-        if (Hidden_raw.data[i] > 0) {
-            output.data[i] = Gradient_Hidden.data[i];
+    for (int i = 0; i < total; i++) {
+        if (Hidden_raw.data[i] > 0.0f) {
+            Output.data[i] = Gradient_Hidden.data[i];
         } else {
-            output.data[i] = 0.0f;
+            Output.data[i] = 0.0f;
         }
     }
-    return output;
 }
 
 
 Matrix matrix_sigmoid(Matrix Input){
     int total = Input.rows * Input.cols;
-    Matrix Result = create_matrix(Input.rows,Input.cols);
+    Matrix Result = create_matrix(Input.rows,Input.cols, false);
 
     for (int i = 0; i < total; i++){
         float sigmoid_equation = 1.0f / (1.0f + expf(-Input.data[i]));
@@ -154,7 +165,7 @@ Matrix matrix_sigmoid(Matrix Input){
 }
 
 Matrix matrix_softmax(Matrix Input) { 
-    Matrix Result = create_matrix(Input.rows, Input.cols);
+    Matrix Result = create_matrix(Input.rows, Input.cols, false);
     
     for (int i = 0; i < Input.rows; i++) {
         float row_max = get_value(Input, i, 0);
@@ -184,7 +195,7 @@ Matrix matrix_addition(Matrix a, Matrix b) {
         FATAL_ERROR("Matrices must be the same size for addition. Exiting...");
     }
     
-    Matrix Result = create_matrix(a.rows, a.cols);
+    Matrix Result = create_matrix(a.rows, a.cols, false);
 
     for (int i = 0; i < a.rows; i++) {
         for (int j = 0; j < a.cols; j++) {
@@ -196,12 +207,40 @@ Matrix matrix_addition(Matrix a, Matrix b) {
     return Result;
 }
 
+void matrix_sum_rows(Matrix Input, Matrix Output){
+    if (Output.rows != 1 || Output.cols != Input.cols) {
+        FATAL_ERROR("Output must be shape (1, Input.cols)");
+    }
+    for (int j = 0; j < Output.cols; j++){
+        Output.data[j] = 0.0f;
+    }
+
+    for (int i = 0; i < Input.rows; i++){
+        for (int j = 0; j < Input.cols; j++){
+            Output.data[j] += Input.data[i * Input.cols + j];
+        }
+    }
+}
+
+void matrix_add_bias(Matrix Input, Matrix Bias, Matrix Output){
+    if (Bias.rows != 1 || Bias.cols != Input.cols) {
+        FATAL_ERROR("Bias must be a (1, cols) matrix matching the Input's columns!");
+    }
+    for (int i = 0; i < Input.rows; i++){ 
+        for (int j = 0; j < Input.cols; j++){
+            int index = (i * Input.cols) + j;
+            Output.data[index] = Input.data[index] + Bias.data[j];
+        }
+    }
+}
+
+
 Matrix matrix_subtraction(Matrix a, Matrix b) {
     if (a.rows != b.rows || a.cols != b.cols) {
         FATAL_ERROR("Matrices must be the same size for subtraction. Exiting...");
     }
 
-    Matrix c = create_matrix(a.rows, a.cols);
+    Matrix c = create_matrix(a.rows, a.cols, false);
 
     for (int i = 0; i < a.rows; i++) {
         for (int j = 0; j < a.cols; j++) {
@@ -214,7 +253,7 @@ Matrix matrix_subtraction(Matrix a, Matrix b) {
 }
 
 Matrix matrix_scalar_multiply(Matrix Input, float scalar) {  
-    Matrix Result = create_matrix(Input.rows, Input.cols);
+    Matrix Result = create_matrix(Input.rows, Input.cols, false);
     int total = Input.rows * Input.cols;
 
     for (int i = 0; i < total; i++){
@@ -224,7 +263,7 @@ Matrix matrix_scalar_multiply(Matrix Input, float scalar) {
 }
 
 Matrix matrix_scalar_subtraction(Matrix Input, float scalar){
-    Matrix Result = create_matrix(Input.rows, Input.cols);
+    Matrix Result = create_matrix(Input.rows, Input.cols, false);
     int total = Input.rows * Input.cols;
 
     for (int i = 0; i < total; i++){
@@ -234,7 +273,7 @@ Matrix matrix_scalar_subtraction(Matrix Input, float scalar){
 }
 
 Matrix matrix_scalar_addition(Matrix Input, float scalar){
-    Matrix Result = create_matrix(Input.rows, Input.cols);
+    Matrix Result = create_matrix(Input.rows, Input.cols, false);
     int total = Input.rows * Input.cols;
 
     for (int i = 0; i < total; i++){
@@ -249,7 +288,7 @@ Matrix matrix_hadamard(Matrix a, Matrix b) {
         FATAL_ERROR("Matrices must be the same size for element-wise multiplication. Exiting...");
     }
     
-    Matrix c = create_matrix(a.rows, a.cols);
+    Matrix c = create_matrix(a.rows, a.cols, false);
     
     for (int i = 0; i < c.rows; i++) {
         for (int j = 0; j < c.cols; j++) {
@@ -262,7 +301,7 @@ Matrix matrix_hadamard(Matrix a, Matrix b) {
 }
 
 Matrix matrix_copy(Matrix Input) {
-    Matrix copy = create_matrix(Input.rows, Input.cols);
+    Matrix copy = create_matrix(Input.rows, Input.cols, false);
     for (int i = 0; i < copy.rows; i++) {
         for (int j = 0; j < copy.cols; j++) {
             int index = (i * copy.cols) + j;
@@ -275,7 +314,7 @@ Matrix matrix_copy(Matrix Input) {
 
 Matrix matrix_normalize(Matrix Dataset) {
     int total = Dataset.rows * Dataset.cols;
-    if (total <= 0) return create_matrix(0, 0);
+    if (total <= 0) return create_matrix(0, 0, false);
 
     float max = Dataset.data[0];
     float min = Dataset.data[0];
@@ -305,7 +344,7 @@ Matrix get_row(Matrix Input, int row_index) {
         FATAL_ERROR("Row index %d out of bounds", row_index);
     }
 
-    Matrix Output = create_matrix(1, Input.cols);
+    Matrix Output = create_matrix(1, Input.cols, false);
 
     for (int i = 0; i < Input.cols; i++) {
         float val = get_value(Input, row_index, i);
@@ -321,5 +360,16 @@ void matrix_swap_rows(Matrix Input, int row1, int row2) {
         float temp = get_value(Input, row1, col);
         set_value(Input, row1, col, get_value(Input, row2, col));
         set_value(Input, row2, col, temp);
+    }
+}
+
+void matrix_reset(Matrix Input) {
+    if (Input.data == NULL) {
+        return; 
+    }
+    memset(Input.data, 0, Input.rows * Input.cols * sizeof(float));
+    
+    if (Input.grad != NULL) {
+        memset(Input.grad, 0, Input.rows * Input.cols * sizeof(float));
     }
 }
