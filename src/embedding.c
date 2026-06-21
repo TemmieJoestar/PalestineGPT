@@ -10,7 +10,7 @@ EmbeddingLayer* create_embedding_layer(int vocab_size, int embedding_dim){
 
     layer->vocab_size = vocab_size;
     layer->embedding_dim = embedding_dim;
-    layer->embeddings = create_matrix(vocab_size,embedding_dim);
+    layer->embeddings = create_matrix(vocab_size, embedding_dim, true);
 
     int total = (vocab_size * embedding_dim);
 
@@ -22,7 +22,6 @@ EmbeddingLayer* create_embedding_layer(int vocab_size, int embedding_dim){
 }
 
 Matrix get_embedding(EmbeddingLayer* layer, int token_id) {
-    // Bounds check
     if (token_id < 0 || token_id >= layer->vocab_size) {
         FATAL_ERROR("Token_id out of bounds.");
         WARNING("Returning error_matrix.");
@@ -33,7 +32,7 @@ Matrix get_embedding(EmbeddingLayer* layer, int token_id) {
 }
 
 Matrix embed_sequence(EmbeddingLayer* layer, int* token_ids, int length) {
-    Matrix Seq_Matrix = create_matrix(length, layer->embedding_dim);
+    Matrix Seq_Matrix = create_matrix(length, layer->embedding_dim, false);
 
     for (int i = 0; i < length; i++) {
         Matrix Vector = get_embedding(layer, token_ids[i]);

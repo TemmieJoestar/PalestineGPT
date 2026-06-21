@@ -26,9 +26,7 @@ Matrix compute_attention_scores(Matrix Q, Matrix K, int d_k){
 
     float scale = 1.0f / sqrtf((float)d_k);
 
-    // ZERO-ALLOCATION TRANSPOSE: Allocate Temp directly with shape (Q.rows, K.rows)
-    // and pass 'true' for is_transB to virtually flip K on the fly.
-    Matrix Temp = create_matrix(Q.rows, K.rows);
+    Matrix Temp = create_matrix(Q.rows, K.rows, false);
     matrix_multiply(Q, K, Temp, false, true);
     
     Matrix Result = matrix_scalar_multiply(Temp, scale);
@@ -60,21 +58,19 @@ Matrix apply_attention_weights(Matrix AttentionWeights, Matrix V){
         FATAL_ERROR("Matrix dimensions cannot be 0. Exiting...");
     }
 
-    // Pre-allocate destination matrix for out-parameter matching (AttentionWeights.rows, V.cols)
-    Matrix Result = create_matrix(AttentionWeights.rows, V.cols);
+    Matrix Result = create_matrix(AttentionWeights.rows, V.cols, false);
     matrix_multiply(AttentionWeights, V, Result, false, false);
     return Result;
 }
 
 Matrix single_attention_forward(AttentionHead* Head, Matrix Input){
-    // Allocate destinations prior to calling the updated matrix_multiply function
-    Matrix Q = create_matrix(Input.rows, Head->Q_weights.cols);
+    Matrix Q = create_matrix(Input.rows, Head->Q_weights.cols, false);
     matrix_multiply(Input, Head->Q_weights, Q, false, false);
 
-    Matrix K = create_matrix(Input.rows, Head->K_weights.cols);
+    Matrix K = create_matrix(Input.rows, Head->K_weights.cols, false);
     matrix_multiply(Input, Head->K_weights, K, false, false);
 
-    Matrix V = create_matrix(Input.rows, Head->V_weights.cols);
+    Matrix V = create_matrix(Input.rows, Head->V_weights.cols, false);
     matrix_multiply(Input, Head->V_weights, V, false, false);
 
     Matrix AttentionScores = compute_attention_scores(Q, K, Head->d_k);
@@ -123,17 +119,16 @@ Matrix multihead_attention_forward(MultiHeadAttention* MHA, Matrix Input){
     if (Input.data == NULL){
         FATAL_ERROR("Input data is NULL. Exiting...");
     }
-    Matrix MultiHead = create_matrix(Input.rows, MHA->num_heads * MHA->Heads[0].d_k);
+    Matrix MultiHead = create_matrix(Input.rows, MHA->num_heads * MHA->Heads[0].d_k, false);
 
     for (int count = 0; count < MHA->num_heads; count++){
-        // Allocate step-by-step for projection layers inside the head loop
-        Matrix Q = create_matrix(Input.rows, MHA->Heads[count].Q_weights.cols);
+        Matrix Q = create_matrix(Input.rows, MHA->Heads[count].Q_weights.cols, false);
         matrix_multiply(Input, MHA->Heads[count].Q_weights, Q, false, false);
 
-        Matrix K = create_matrix(Input.rows, MHA->Heads[count].K_weights.cols);
+        Matrix K = create_matrix(Input.rows, MHA->Heads[count].K_weights.cols, false);
         matrix_multiply(Input, MHA->Heads[count].K_weights, K, false, false);
 
-        Matrix V = create_matrix(Input.rows, MHA->Heads[count].V_weights.cols);
+        Matrix V = create_matrix(Input.rows, MHA->Heads[count].V_weights.cols, false);
         matrix_multiply(Input, MHA->Heads[count].V_weights, V, false, false);
 
         Matrix AttentionScores = compute_attention_scores(Q, K, MHA->Heads[count].d_k);
@@ -181,8 +176,7 @@ Matrix multihead_attention_forward(MultiHeadAttention* MHA, Matrix Input){
         free_matrix(ContextualMeaning);
     }
 
-    // FIXED BUG: Explicitly allocate ProjectedOutput structure before multiplying
-    Matrix ProjectedOutput = create_matrix(MultiHead.rows, MHA->Output_Weights.cols);
+    Matrix ProjectedOutput = create_matrix(MultiHead.rows, MHA->Output_Weights.cols, false);
     matrix_multiply(MultiHead, MHA->Output_Weights, ProjectedOutput, false, false);
     free_matrix(MultiHead);
 

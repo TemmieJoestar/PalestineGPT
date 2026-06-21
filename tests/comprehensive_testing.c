@@ -66,8 +66,8 @@ void test_matrix_addition() {
     printf(BOLD("Testing matrix_addition... "));
     
     // Create Test Matrices
-    Matrix A = create_matrix(2, 2);
-    Matrix B = create_matrix(2, 2);
+    Matrix A = create_matrix(2, 2, false);
+    Matrix B = create_matrix(2, 2, false);
     
     // Fill A: [1 2]
     //           [3 4]
@@ -103,13 +103,13 @@ void test_matrix_subtraction(){
     printf(BOLD("Testing matrix_subtraction... "));
 
     // Create Tested Matrices
-    Matrix A = create_matrix(2,2);
-    Matrix B = create_matrix(2,2);
+    Matrix A = create_matrix(2, 2, false);
+    Matrix B = create_matrix(2, 2, false);
 
     // Fill A : [10 11]
     //            [12 13]
     set_value(A, 0, 0, 10.0f); set_value(A, 0, 1, 11.0f);
-    set_value(A, 1, 0, 12.0f); set_value(A,1, 1, 13.0f);
+    set_value(A, 1, 0, 12.0f); set_value(A, 1, 1, 13.0f);
 
     // Fill B [5 6]
     //          [7 8]
@@ -117,7 +117,7 @@ void test_matrix_subtraction(){
     set_value(B, 1, 0, 7.0f); set_value(B, 1, 1, 8.0f);
 
     // Create Testing Matrix
-    Matrix C = matrix_subtraction(A,B);
+    Matrix C = matrix_subtraction(A, B);
 
     // Check Values
     // Subtracted : [5 5]
@@ -140,8 +140,8 @@ void test_matrix_multiply() {
     printf(BOLD("Testing matrix_multiply... "));
 
     // Create Test Matrices
-    Matrix A = create_matrix(2, 3);
-    Matrix B = create_matrix(3, 2);
+    Matrix A = create_matrix(2, 3, false);
+    Matrix B = create_matrix(3, 2, false);
     
     // Fill A: [1 2 3]
     //           [4 5 6]
@@ -156,7 +156,7 @@ void test_matrix_multiply() {
     set_value(B, 2, 0, 11.0f); set_value(B, 2, 1, 12.0f);
     
     // Create Testing Matrix
-    Matrix C = create_matrix(2, 2);
+    Matrix C = create_matrix(2, 2, false);
     matrix_multiply(A, B, C, false, false);
 
     // Check Values
@@ -180,8 +180,8 @@ void test_matrix_hadamard(){
     printf(BOLD("Testing matrix_hadamard... "));
 
     // Create Tested Matrices
-    Matrix A = create_matrix(2,2);
-    Matrix B = create_matrix(2,2);
+    Matrix A = create_matrix(2, 2, false);
+    Matrix B = create_matrix(2, 2, false);
 
     // Fill A: [1 2]
     //           [3 4]
@@ -217,7 +217,7 @@ void test_matrix_relu(){
     printf(BOLD("Testing matrix_relu... "));
 
     // Create Tested Matrix
-     Matrix A = create_matrix(2,2);
+     Matrix A = create_matrix(2, 2, false);
      
      // Fill A: [-1 2]
      //           [3 -4]
@@ -247,7 +247,7 @@ void test_matrix_softmax() {
     printf(BOLD("Testing matrix_softmax... "));
 
     // Create Tested Matrix
-    Matrix A = create_matrix(1, 3);
+    Matrix A = create_matrix(1, 3, false);
 
      // Fill A: [1 2 3]
     set_value(A, 0, 0, 1.0f); set_value(A, 0, 1, 2.0f); set_value(A, 0, 2, 3.0f);
@@ -279,7 +279,7 @@ void test_matrix_scalar_multiply() {
     printf(BOLD("Testing matrix_scalar_multiply... "));
 
     // Create test matrix
-    Matrix A = create_matrix(2, 2);
+    Matrix A = create_matrix(2, 2, false);
     
     // Fill A: [1 2]
     //         [3 4]
@@ -307,7 +307,7 @@ void test_matrix_scalar_multiply() {
 void test_matrix_copy() {
     printf(BOLD("Testing matrix_copy... "));
     
-    Matrix A = create_matrix(2, 2);
+    Matrix A = create_matrix(2, 2, false);
     set_value(A, 0, 0, 1.0f); set_value(A, 0, 1, 2.0f);
     set_value(A, 1, 0, 3.0f); set_value(A, 1, 1, 4.0f);
     
@@ -334,7 +334,7 @@ void test_matrix_sigmoid(){
     printf(BOLD("Testing matrix_sigmoid... "));
 
     // Create tested matrix
-    Matrix A = create_matrix(1, 3);
+    Matrix A = create_matrix(1, 3, false);
     
     // Fill A: [-5 0 5]
     set_value(A, 0, 0, -5.0f);
@@ -360,7 +360,7 @@ void test_matrix_sigmoid(){
 void test_matrix_scalar_addition() {
     printf(BOLD("Testing matrix_scalar_addition... "));
 
-    Matrix A = create_matrix(2, 2);
+    Matrix A = create_matrix(2, 2, false);
     // Fill A: [1.0, 2.0]
     //         [3.0, 4.0]
     set_value(A, 0, 0, 1.0f); set_value(A, 0, 1, 2.0f);
@@ -384,7 +384,7 @@ void test_matrix_scalar_addition() {
 void test_matrix_scalar_subtraction() {
     printf(BOLD("Testing matrix_scalar_subtraction... "));
 
-    Matrix A = create_matrix(2, 2);
+    Matrix A = create_matrix(2, 2, false);
     // Fill A: [10.0, 20.0]
     //         [30.0, 40.0]
     set_value(A, 0, 0, 10.0f); set_value(A, 0, 1, 20.0f);
@@ -410,7 +410,7 @@ void test_matrix_normalize() {
 
     // Scenario 1: Standard Normalization
     // Data: [10.0, 30.0, 50.0] -> Range is 40.0
-    Matrix A = create_matrix(1, 3);
+    Matrix A = create_matrix(1, 3, false);
     set_value(A, 0, 0, 10.0f); 
     set_value(A, 0, 1, 30.0f); 
     set_value(A, 0, 2, 50.0f); 
@@ -424,7 +424,7 @@ void test_matrix_normalize() {
 
     // Scenario 2: Zero Range Edge Case
     // Data: [7.0, 7.0] -> Should print error and return copy
-    Matrix B = create_matrix(1, 2);
+    Matrix B = create_matrix(1, 2, false);
     set_value(B, 0, 0, 7.0f);
     set_value(B, 0, 1, 7.0f);
     
