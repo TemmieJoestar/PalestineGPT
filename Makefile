@@ -23,7 +23,8 @@ LIB_SOURCES = $(SRC_DIR)/matrix.c \
               $(SRC_DIR)/embedding.c \
               $(SRC_DIR)/tokenizer.c \
 			  $(SRC_DIR)/ngram.c \
-			  $(SRC_DIR)/attention.c
+			  $(SRC_DIR)/attention.c \
+			  $(SRC_DIR)/ffn.c
 
 ALL_HEADERS = $(INC_DIR)/matrix.h \
               $(INC_DIR)/gradient_descent.h \
@@ -32,7 +33,8 @@ ALL_HEADERS = $(INC_DIR)/matrix.h \
               $(INC_DIR)/embedding.h \
               $(INC_DIR)/tokenizer.h \
               $(INC_DIR)/ngram.h \
-			  $(INC_DIR)/attention.h
+			  $(INC_DIR)/attention.h \
+			  $(INC_DIR)/ffn.h
 all: main
 
 main: $(SRC_DIR)/main.c $(LIB_SOURCES) $(ALL_HEADERS)
@@ -75,7 +77,7 @@ help:
 	@printf "  $(YELLOW)$(BOLD)%-25s$(RESET) $(BOLD)- %s$(RESET)\n" "make clean" "Remove executable files"
 
 clean:
-	@rm -f main xor_problem iris_dataset *.mem *.o *.memcheck test_vocab test_attention comprehensive_testing test_embedding test_full_pipeline test_ngram
+	@rm -f main xor_problem iris_dataset *.mem *.o *.memcheck test_vocab ffn_test test_attention comprehensive_testing test_embedding test_full_pipeline test_ngram
 	@echo -e "$(GREEN)$(BOLD)Cleaned up executables and object files.$(RESET)"
 
 .PHONY: all test help clean
