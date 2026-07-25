@@ -43,16 +43,14 @@ int main() {
 void test_compute_attention_scores() {
     printf(BOLD("Testing compute_attention_scores... "));
     
-    int d_k = 4; // sqrt(4) = 2.0
-    Matrix Q = create_matrix(1, 4, false);
-    Matrix K = create_matrix(1, 4, false);
+    int d_k = 4; 
+    Matrix* Q = create_matrix(1, 4, false);
+    Matrix* K = create_matrix(1, 4, false);
     
-    // Set Q and K to identity-like for 1.0 dot product
     set_value(Q, 0, 0, 1.0f);
     set_value(K, 0, 0, 1.0f);
     
-    // Result = (Q * K^T) / sqrt(d_k) = 1.0 / 2.0 = 0.5
-    Matrix scores = compute_attention_scores(Q, K, d_k);
+    Matrix* scores = compute_attention_scores(Q, K, d_k);
     
     EXPECT_NEAR(get_value(scores, 0, 0), 0.5f, 0.0001f);
     
@@ -66,12 +64,11 @@ void test_compute_attention_scores() {
 void test_compute_attention_weights() {
     printf(BOLD("Testing compute_attention_weights... "));
     
-    Matrix scores = create_matrix(1, 2, false);
+    Matrix* scores = create_matrix(1, 2, false);
     set_value(scores, 0, 0, 2.0f);
     set_value(scores, 0, 1, 2.0f);
     
-    // Softmax of [2, 2] is [0.5, 0.5]
-    Matrix weights = compute_attention_weights(scores);
+    Matrix* weights = compute_attention_weights(scores);
     
     EXPECT_NEAR(get_value(weights, 0, 0), 0.5f, 0.0001f);
     EXPECT_NEAR(get_value(weights, 0, 1), 0.5f, 0.0001f);
@@ -85,14 +82,14 @@ void test_compute_attention_weights() {
 void test_apply_attention_weights() {
     printf(BOLD("Testing apply_attention_weights... "));
     
-    Matrix weights = create_matrix(1, 2, false);
-    Matrix V = create_matrix(2, 2, false);
+    Matrix* weights = create_matrix(1, 2, false);
+    Matrix* V = create_matrix(2, 2, false);
     
-    set_value(weights, 0, 0, 1.0f); // Attend fully to first value
+    set_value(weights, 0, 0, 1.0f); 
     set_value(V, 0, 0, 10.0f);
     set_value(V, 1, 0, 20.0f);
     
-    Matrix result = apply_attention_weights(weights, V);
+    Matrix* result = apply_attention_weights(weights, V);
     
     EXPECT_NEAR(get_value(result, 0, 0), 10.0f, 0.0001f);
     
@@ -109,9 +106,9 @@ void test_single_attention_forward() {
     AttentionHead head;
     head.d_model = 2;
     head.d_k = 2;
-    head.Q_weights = create_matrix(2, 2, false); // Identity
-    head.K_weights = create_matrix(2, 2, false); // Identity
-    head.V_weights = create_matrix(2, 2, false); // Identity
+    head.Q_weights = create_matrix(2, 2, false); 
+    head.K_weights = create_matrix(2, 2, false); 
+    head.V_weights = create_matrix(2, 2, false); 
     
     for(int i=0; i<2; i++) {
         set_value(head.Q_weights, i, i, 1.0f);
@@ -119,13 +116,11 @@ void test_single_attention_forward() {
         set_value(head.V_weights, i, i, 1.0f);
     }
     
-    Matrix input = create_matrix(1, 2, false);
+    Matrix* input = create_matrix(1, 2, false);
     set_value(input, 0, 0, 1.0f);
     
-    Matrix output = single_attention_forward(&head, input);
+    Matrix* output = single_attention_forward(&head, input);
     
-    // Output should be Input + AttentionResult
-    // For identity weights and single input row, output will be Input + Input = 2*Input
     EXPECT_NEAR(get_value(output, 0, 0), 2.0f, 0.001f);
     
     free_matrix(input);
@@ -150,7 +145,6 @@ void test_multihead_attention_forward() {
     mha.Heads = malloc(num_heads * sizeof(AttentionHead));
     mha.Output_Weights = create_matrix(d_model, d_model, false);
 
-    // Initialize Identity-like weights
     for (int i = 0; i < num_heads; i++) {
         mha.Heads[i].d_model = d_model;
         mha.Heads[i].d_k = d_k;
@@ -159,7 +153,7 @@ void test_multihead_attention_forward() {
         mha.Heads[i].V_weights = create_matrix(d_model, d_k, false);
         
         for (int j = 0; j < d_k; j++) {
-            set_value(mha.Heads[i].Q_weights, j, j, 10.0f); // High energy for focus
+            set_value(mha.Heads[i].Q_weights, j, j, 10.0f); 
             set_value(mha.Heads[i].K_weights, j, j, 10.0f);
             set_value(mha.Heads[i].V_weights, j, j, 1.0f);
         }
@@ -167,19 +161,17 @@ void test_multihead_attention_forward() {
 
     for (int i = 0; i < d_model; i++) set_value(mha.Output_Weights, i, i, 1.0f);
 
-    Matrix input = create_matrix(seq_len, d_model, false);
+    Matrix* input = create_matrix(seq_len, d_model, false);
     set_value(input, 0, 0, 1.0f); 
     set_value(input, 1, 1, 1.0f); 
 
-    Matrix output = multihead_attention_forward(&mha, input);
+    Matrix* output = multihead_attention_forward(&mha, input);
 
-    // Verify Dimensions
-    if (output.rows != seq_len || output.cols != d_model) {
+    if (output->rows != seq_len || output->cols != d_model) {
         printf(RED_TEXT("FAILED: Dimension mismatch\n"));
         exit(1);
     }
 
-    // Verify Residual Logic: Input[0,0] is 1.0, Attention contributes ~1.0, Total ~2.0
     EXPECT_NEAR(get_value(output, 0, 0), 2.0f, 0.01f);
     EXPECT_NEAR(get_value(output, 1, 1), 2.0f, 0.01f);
 

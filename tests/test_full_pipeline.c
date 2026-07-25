@@ -43,7 +43,6 @@ int main() {
 void test_full_pipeline() {
     printf("Test 1: Full tokenization pipeline\n");
     
-    // Original text
     const char* text = "hello world";
     
     // 1. Encode to tokens
@@ -53,20 +52,19 @@ void test_full_pipeline() {
     // 2. Decode back
     char* decoded = decode(tokens, len);
     
-    // Should match
     assert(strcmp(text, decoded) == 0);
     
     // 3. Embed the tokens
     EmbeddingLayer* layer = create_embedding_layer(70, 128);
-    Matrix embedded = embed_sequence(layer, tokens, len);
+    Matrix* embedded = embed_sequence(layer, tokens, len);
     
     // Verify dimensions
-    assert(embedded.rows == len);
-    assert(embedded.cols == 128);
+    assert(embedded->rows == len);
+    assert(embedded->cols == 128);
     
     printf("Text: '%s'\n", text);
     printf("Tokens: %d\n", len);
-    printf("Embedded: %dx%d matrix\n", embedded.rows, embedded.cols);
+    printf("Embedded: %dx%d matrix\n", embedded->rows, embedded->cols);
     
     free(tokens);
     free(decoded);

@@ -4,15 +4,17 @@
 #include "matrix.h"
 #include "error.h"
 
-Matrix load_iris_features(const char* filename) {
+Matrix* load_iris_features(const char* filename) {
     FILE *fp = fopen(filename, "r");
     char buffer[1024];
     
     if (!fp) {
-        FATAL_ERROR("Could not open file %s.",filename);
+        FATAL_ERROR("Could not open file %s.", filename);
     }
 
-    Matrix Output = create_matrix(150, 4, false); 
+    // Assuming create_matrix has been updated to return Matrix*
+    // If create_matrix still returns by value, use: Matrix* Output = malloc(sizeof(Matrix)); *Output = create_matrix(...);
+    Matrix* Output = create_matrix(150, 4, false); 
     int current_row = 0;
 
     while (fgets(buffer, 1024, fp) && current_row < 150) {
@@ -32,15 +34,15 @@ Matrix load_iris_features(const char* filename) {
     return Output;
 }
 
-Matrix load_iris_labels(const char* filename) {
+Matrix* load_iris_labels(const char* filename) {
     FILE *fp = fopen(filename, "r");
     char buffer[1024];
     
     if (!fp) {
-        FATAL_ERROR("Could not open file %s.",filename); 
+        FATAL_ERROR("Could not open file %s.", filename); 
     }
 
-    Matrix Output = create_matrix(150, 1, false); 
+    Matrix* Output = create_matrix(150, 1, false); 
     int current_row = 0;
 
     while (fgets(buffer, sizeof(buffer), fp) && current_row < 150) {
@@ -61,8 +63,8 @@ Matrix load_iris_labels(const char* filename) {
     return Output;
 }
 
-Matrix label_to_onehot(int label, int num_classes) {
-    Matrix row_vector = create_matrix(1, num_classes, false);
+Matrix* label_to_onehot(int label, int num_classes) {
+    Matrix* row_vector = create_matrix(1, num_classes, false);
 
     for (int i = 0; i < num_classes; i++) {
         set_value(row_vector, 0, i, 0.0f);
@@ -77,8 +79,8 @@ Matrix label_to_onehot(int label, int num_classes) {
     return row_vector;
 }
 
-void shuffle_dataset(Matrix Features, Matrix Labels) {
-    for (int i = Features.rows - 1; i > 0; i--) {
+void shuffle_dataset(Matrix* Features, Matrix* Labels) {
+    for (int i = Features->rows - 1; i > 0; i--) {
         int j = rand() % (i + 1);
 
         matrix_swap_rows(Features, i, j);

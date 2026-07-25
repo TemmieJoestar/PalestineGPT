@@ -16,35 +16,37 @@ EmbeddingLayer* create_embedding_layer(int vocab_size, int embedding_dim){
 
     for (int i = 0; i < total; i++){
         float random_val = ((float)rand() / (float)RAND_MAX) - 0.5f;
-        layer->embeddings.data[i] = random_val;
+        layer->embeddings->data[i] = random_val;
     }
     return layer;
 }
 
-Matrix get_embedding(EmbeddingLayer* layer, int token_id) {
+Matrix* get_embedding(EmbeddingLayer* layer, int token_id) {
     if (token_id < 0 || token_id >= layer->vocab_size) {
-        FATAL_ERROR("Token_id out of bounds.");
-        WARNING("Returning error_matrix.");
-        Matrix error_matrix = {0}; 
-        return error_matrix;
+        FATAL_ERROR("Token ID %d out of bounds (vocab_size: %d).", token_id, layer->vocab_size);
+        return NULL; 
     }
-    return get_row(layer->embeddings, token_id);
+    
+    Matrix* Output = create_matrix(1, layer->embedding_dim, false);
+    get_row(layer->embeddings, token_id, Output);
+    
+    return Output;
 }
 
-Matrix embed_sequence(EmbeddingLayer* layer, int* token_ids, int length) {
-    Matrix Seq_Matrix = create_matrix(length, layer->embedding_dim, false);
+Matrix* embed_sequence(EmbeddingLayer* layer, int* token_ids, int length) {
+    Matrix* Seq_Matrix = create_matrix(length, layer->embedding_dim, false);
 
     for (int i = 0; i < length; i++) {
-        Matrix Vector = get_embedding(layer, token_ids[i]);
+        Matrix* Vector = get_embedding(layer, token_ids[i]);
 
-        if (Vector.data == NULL) {
+        if (Vector == NULL || Vector->data == NULL) {
             ERROR("Token_id %d out of bounds at sequence index %d. Skipping.", token_ids[i],i);
-            WARNING("Returning error_matrix.");
+            WARNING("Returning NULL error_matrix.");
             free_matrix(Seq_Matrix);
-            Matrix error_matrix = {0}; 
-            return error_matrix;
+            if (Vector) free_matrix(Vector);
+            return NULL; 
         }
-        memcpy(Seq_Matrix.data + (i * Seq_Matrix.cols), Vector.data, Vector.cols * sizeof(float));
+        memcpy(Seq_Matrix->data + (i * Seq_Matrix->cols), Vector->data, Vector->cols * sizeof(float));
         free_matrix(Vector);
     }
     return Seq_Matrix;
