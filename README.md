@@ -50,7 +50,8 @@ make clean
 - Neural network activations
 - Data preprocessing
 - Ngram generation
-
+- Feed-Forward Networks 
+- LayerNorm
 ---
 
 ## License

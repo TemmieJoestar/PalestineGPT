@@ -79,7 +79,7 @@ help:
 	@printf "  $(YELLOW)$(BOLD)%-25s$(RESET) $(BOLD)- %s$(RESET)\n" "make clean" "Remove executable files"
 
 clean:
-	@rm -f main xor_problem iris_dataset *.mem *.o *.memcheck test_layer_norm test_vocab ffn_test test_attention comprehensive_testing test_embedding test_full_pipeline test_ngram
+	@rm -f main xor_problem iris_dataset *.mem *.o *.memcheck test_layer_norm test_vocab ffn_test test_attention test_matrix test_embedding test_input_pipeline test_ngram
 	@echo -e "$(GREEN)$(BOLD)Cleaned up executables and object files.$(RESET)"
 
 .PHONY: all test help clean
