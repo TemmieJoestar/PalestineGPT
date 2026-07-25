@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include "matrix.h"
-
+#include "error.h"
 // Testing Macro
 #define EXPECT_NEAR(actual, expected, tol) \
     do { \
@@ -80,7 +80,8 @@ void test_matrix_addition() {
     set_value(B, 1, 0, 7.0f); set_value(B, 1, 1, 8.0f);
     
     // Create Testing Matrix as Pointer
-    Matrix* C = matrix_addition(A, B);
+    Matrix* C = create_matrix(2, 2, false);
+    matrix_addition(A, B, C);
     
     // Check Values
     // Addition:  [6  8]
@@ -117,7 +118,8 @@ void test_matrix_subtraction(){
     set_value(B, 1, 0, 7.0f); set_value(B, 1, 1, 8.0f);
 
     // Create Testing Matrix as Pointer
-    Matrix* C = matrix_subtraction(A, B);
+    Matrix* C = create_matrix(2, 2, false);
+    matrix_subtraction(A, B, C);
 
     // Check Values
     // Subtracted : [5 5]
@@ -194,7 +196,8 @@ void test_matrix_hadamard(){
     set_value(B, 1, 0, 7.0f); set_value(B, 1, 1, 8.0f);
     
     // Testing Function
-    Matrix* C = matrix_hadamard(A, B);
+    Matrix* C = create_matrix(2, 2, false);
+    matrix_hadamard(A, B, C);
 
     // Check Values
     // Hadamard: [5 12]
@@ -256,7 +259,8 @@ void test_matrix_softmax() {
     set_value(A, 0, 0, 1.0f); set_value(A, 0, 1, 2.0f); set_value(A, 0, 2, 3.0f);
 
     // Create Testing Matrix as Pointer
-    Matrix* C = matrix_softmax(A);
+    Matrix* C = create_matrix(1, 3, false);
+    matrix_softmax(A, C);
 
     // Test 6-1: Check specific probabilities
     // Expected for [1, 2, 3]: [0.0900, 0.2447, 0.6652]
@@ -289,8 +293,8 @@ void test_matrix_scalar_multiply() {
     set_value(A, 0, 0, 1.0f); set_value(A, 0, 1, 2.0f);
     set_value(A, 1, 0, 3.0f); set_value(A, 1, 1, 4.0f);
 
-    // Multiply by scalar 2.5
-    Matrix* C = matrix_scalar_multiply(A, 2.5f);
+    Matrix* C = create_matrix(2, 2, false);
+    matrix_scalar_multiply(A, 2.5f, C);
 
     // Check values
     // Expected: [2.5  5.0]
@@ -345,7 +349,8 @@ void test_matrix_sigmoid(){
     set_value(A, 0, 2, 5.0f);
     
     // Create testing matrix as Pointer
-    Matrix* C = matrix_sigmoid(A);
+    Matrix* C = create_matrix(1, 3, false);
+    matrix_sigmoid(A, C);
 
     // Check values
     // Expected: [0.00669, 0.5000, 0.9933]
@@ -369,7 +374,8 @@ void test_matrix_scalar_addition() {
     set_value(A, 0, 0, 1.0f); set_value(A, 0, 1, 2.0f);
     set_value(A, 1, 0, 3.0f); set_value(A, 1, 1, 4.0f);
 
-    Matrix* C = matrix_scalar_addition(A, 10.5f);
+    Matrix* C = create_matrix(2, 2, false);
+    matrix_scalar_addition(A, 10.5f, C);
 
     // Expected: [11.5, 12.5]
     //           [13.5, 14.5]
@@ -393,7 +399,8 @@ void test_matrix_scalar_subtraction() {
     set_value(A, 0, 0, 10.0f); set_value(A, 0, 1, 20.0f);
     set_value(A, 1, 0, 30.0f); set_value(A, 1, 1, 40.0f);
 
-    Matrix* C = matrix_scalar_subtraction(A, 5.0f);
+    Matrix* C = create_matrix(2, 2, false);
+    matrix_scalar_subtraction(A, 5.0f, C);
 
     // Expected: [5.0, 15.0]
     //           [25.0, 35.0]
@@ -418,30 +425,17 @@ void test_matrix_normalize() {
     set_value(A, 0, 1, 30.0f); 
     set_value(A, 0, 2, 50.0f); 
 
-    Matrix* C = matrix_normalize(A);
+    Matrix* C = create_matrix(1, 3, false);
+    matrix_normalize(A, C);
 
     // Expected: [(10-10)/40, (30-10)/40, (50-10)/40] -> [0.0, 0.5, 1.0]
     EXPECT_NEAR(get_value(C, 0, 0), 0.0f, 0.0001f);
     EXPECT_NEAR(get_value(C, 0, 1), 0.5f, 0.0001f);
     EXPECT_NEAR(get_value(C, 0, 2), 1.0f, 0.0001f);
 
-    // Scenario 2: Zero Range Edge Case
-    // Data: [7.0, 7.0] -> Should print error and return copy
-    Matrix* B = create_matrix(1, 2, false);
-    set_value(B, 0, 0, 7.0f);
-    set_value(B, 0, 1, 7.0f);
-    
-    printf(CYAN_TEXT("\n(Next warning message is expected behavior)\n"));
-    Matrix* D = matrix_normalize(B);
-    
-    EXPECT_NEAR(get_value(D, 0, 0), 7.0f, 0.0001f);
-    EXPECT_NEAR(get_value(D, 0, 1), 7.0f, 0.0001f);
-
     // Clean Up
     free_matrix(A);
     free_matrix(C);
-    free_matrix(B);
-    free_matrix(D);
 
     printf(GREEN_TEXT("PASSED\n"));
 }

@@ -3,6 +3,7 @@
 #include <math.h>
 #include "matrix.h"
 #include "embedding.h"
+#include "error.h"
 
 // Testing Macros
 #define EXPECT_EQ_INT(actual, expected) \

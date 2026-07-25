@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "matrix.h"
 #include "ffn.h"
+#include "error.h"
 
 #define EXPECT_NEAR(actual, expected, tol) \
     do { \
