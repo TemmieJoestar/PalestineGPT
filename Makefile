@@ -25,7 +25,8 @@ LIB_SOURCES = $(SRC_DIR)/matrix.c \
 			  $(SRC_DIR)/ngram.c \
 			  $(SRC_DIR)/attention.c \
 			  $(SRC_DIR)/ffn.c \
-			  $(SRC_DIR)/layernorm.c
+			  $(SRC_DIR)/layernorm.c \
+			  $(SRC_DIR)/positional_encoding.c
 
 ALL_HEADERS = $(INC_DIR)/matrix.h \
               $(INC_DIR)/gradient_descent.h \
@@ -36,7 +37,8 @@ ALL_HEADERS = $(INC_DIR)/matrix.h \
               $(INC_DIR)/ngram.h \
 			  $(INC_DIR)/attention.h \
 			  $(INC_DIR)/ffn.h \
-			  $(INC_DIR)/layernorm.h
+			  $(INC_DIR)/layernorm.h \
+			  $(INC_DIR)/positional_encoding.h
 all: main
 
 main: $(SRC_DIR)/main.c $(LIB_SOURCES) $(ALL_HEADERS)
